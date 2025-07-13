@@ -11,12 +11,12 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Create build directory
-if not exist "build" mkdir build
-if not exist "dist" mkdir dist
+REM Create directories
+if not exist "target" mkdir target
+if not exist "target\classes" mkdir target\classes
 
 echo Compiling Java source...
-javac -d build SafeCleanGUI.java
+javac -d target\classes com\safeclean\SafeCleanGUI.java
 
 if errorlevel 1 (
     echo ERROR: Compilation failed
@@ -25,30 +25,27 @@ if errorlevel 1 (
 )
 
 echo Creating JAR file...
-cd build
-jar cfe ../dist/SafeCleanGUI.jar SafeCleanGUI *.class
+cd target\classes
+jar cfe ..\SafeCleanWinX.jar com.safeclean.SafeCleanGUI com\safeclean\*.class
 
 if errorlevel 1 (
     echo ERROR: JAR creation failed
-    cd ..
+    cd ..\..
     pause
     exit /b 1
 )
 
-cd ..
+cd ..\..
 
 echo.
 echo ✅ Build completed successfully!
 echo.
 echo Output files:
-echo   - dist/SafeCleanGUI.jar (Java application)
+echo   - target\SafeCleanWinX.jar (Java application)
 echo.
 echo To run the application:
-echo   java -jar dist/SafeCleanGUI.jar
+echo   java -jar target\SafeCleanWinX.jar
 echo.
-echo To create a Windows executable, you can use:
-echo   - Launch4j (recommended)
-echo   - jpackage (Java 14+)
-echo   - GraalVM native-image
+echo Note: Make sure to run as Administrator for full functionality
 echo.
 pause

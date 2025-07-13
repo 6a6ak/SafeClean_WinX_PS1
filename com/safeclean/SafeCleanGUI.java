@@ -1,8 +1,11 @@
+package com.safeclean;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -11,6 +14,7 @@ public class SafeCleanGUI extends JFrame {
     private JTextArea outputArea;
     private JProgressBar progressBar;
     private JButton[] cleanupButtons;
+    private JButton runAllButton;
     private String[] buttonLabels = {
         "Clean Temporary Files",
         "Clean Windows Update Cache",
@@ -29,8 +33,9 @@ public class SafeCleanGUI extends JFrame {
         setTitle("SafeClean WinX - System Cleanup Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        setSize(800, 600);
+        setSize(900, 700);
         setLocationRelativeTo(null);
+        setIconImage(createCustomIcon());
 
         // Create header panel
         JPanel headerPanel = createHeaderPanel();
@@ -45,37 +50,114 @@ public class SafeCleanGUI extends JFrame {
         add(statusPanel, BorderLayout.SOUTH);
     }
 
+    private BufferedImage createCustomIcon() {
+        int size = 64;
+        BufferedImage icon = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = icon.createGraphics();
+        
+        // Enable antialiasing
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
+        // Create gradient background
+        GradientPaint gradient = new GradientPaint(0, 0, new Color(45, 62, 80), size, size, new Color(70, 130, 180));
+        g2d.setPaint(gradient);
+        g2d.fillRoundRect(0, 0, size, size, 12, 12);
+        
+        // Add border
+        g2d.setColor(new Color(30, 40, 60));
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawRoundRect(1, 1, size-2, size-2, 12, 12);
+        
+        // Draw cleaning brush icon
+        g2d.setColor(Color.WHITE);
+        g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+        
+        // Brush handle
+        g2d.drawLine(15, 45, 35, 25);
+        
+        // Brush head
+        g2d.fillOval(32, 22, 8, 8);
+        
+        // Cleaning sparkles
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawLine(42, 15, 45, 12);
+        g2d.drawLine(48, 18, 51, 15);
+        g2d.drawLine(45, 22, 48, 19);
+        
+        // Add "SC" text
+        g2d.setFont(new Font("Arial", Font.BOLD, 12));
+        FontMetrics fm = g2d.getFontMetrics();
+        String text = "SC";
+        int textWidth = fm.stringWidth(text);
+        g2d.drawString(text, (size - textWidth) / 2, size - 8);
+        
+        g2d.dispose();
+        return icon;
+    }
+
     private JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(new EmptyBorder(15, 20, 15, 20));
-        panel.setBackground(new Color(45, 62, 80));
+        panel.setBorder(new EmptyBorder(20, 25, 20, 25));
+        
+        // Create gradient background
+        panel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                GradientPaint gp = new GradientPaint(0, 0, new Color(45, 62, 80), 0, getHeight(), new Color(70, 130, 180));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        panel.setBorder(new EmptyBorder(20, 25, 20, 25));
 
+        // Create icon label
+        JLabel iconLabel = new JLabel();
+        iconLabel.setIcon(new ImageIcon(createCustomIcon()));
+        
         JLabel titleLabel = new JLabel("SafeClean WinX");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
 
-        JLabel subtitleLabel = new JLabel("Windows System Cleanup Tool - Run as Administrator");
-        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        subtitleLabel.setForeground(new Color(200, 200, 200));
+        JLabel subtitleLabel = new JLabel("Professional Windows System Cleanup Tool");
+        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        subtitleLabel.setForeground(new Color(220, 220, 220));
 
         JPanel textPanel = new JPanel(new BorderLayout());
         textPanel.setOpaque(false);
         textPanel.add(titleLabel, BorderLayout.NORTH);
         textPanel.add(subtitleLabel, BorderLayout.CENTER);
 
-        panel.add(textPanel, BorderLayout.WEST);
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setOpaque(false);
+        leftPanel.add(iconLabel, BorderLayout.WEST);
+        leftPanel.add(Box.createHorizontalStrut(15), BorderLayout.CENTER);
+        leftPanel.add(textPanel, BorderLayout.EAST);
 
-        // Add warning icon
-        JLabel warningLabel = new JLabel("⚠️");
-        warningLabel.setFont(new Font("Segoe UI", Font.PLAIN, 32));
-        panel.add(warningLabel, BorderLayout.EAST);
+        panel.add(leftPanel, BorderLayout.WEST);
+
+        // Add warning section
+        JPanel warningPanel = new JPanel(new BorderLayout());
+        warningPanel.setOpaque(false);
+        JLabel warningIcon = new JLabel("⚠️");
+        warningIcon.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        JLabel warningText = new JLabel("Admin Required");
+        warningText.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        warningText.setForeground(new Color(255, 193, 7));
+        warningPanel.add(warningIcon, BorderLayout.NORTH);
+        warningPanel.add(warningText, BorderLayout.CENTER);
+
+        panel.add(warningPanel, BorderLayout.EAST);
 
         return panel;
     }
 
     private JPanel createMainPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        panel.setBorder(new EmptyBorder(25, 25, 25, 25));
+        panel.setBackground(new Color(248, 249, 250));
 
         // Create buttons panel
         JPanel buttonsPanel = createButtonsPanel();
@@ -85,8 +167,9 @@ public class SafeCleanGUI extends JFrame {
 
         // Split pane to divide buttons and output
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, buttonsPanel, outputPanel);
-        splitPane.setDividerLocation(350);
+        splitPane.setDividerLocation(380);
         splitPane.setResizeWeight(0.4);
+        splitPane.setBorder(null);
 
         panel.add(splitPane, BorderLayout.CENTER);
         return panel;
@@ -95,29 +178,20 @@ public class SafeCleanGUI extends JFrame {
     private JPanel createButtonsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createTitledBorder("Cleanup Options"));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(45, 62, 80), 2), 
+            "Cleanup Operations",
+            0, 0, 
+            new Font("Segoe UI", Font.BOLD, 14),
+            new Color(45, 62, 80)
+        ));
+        panel.setBackground(Color.WHITE);
 
         cleanupButtons = new JButton[buttonLabels.length];
 
         for (int i = 0; i < buttonLabels.length; i++) {
-            JButton button = new JButton(buttonLabels[i]);
-            button.setAlignmentX(Component.CENTER_ALIGNMENT);
-            button.setMaximumSize(new Dimension(300, 40));
-            button.setPreferredSize(new Dimension(300, 40));
-            button.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+            JButton button = createStyledButton(buttonLabels[i], i);
             
-            // Set colors based on operation type
-            if (i == 4 || i == 5) { // Advanced operations
-                button.setBackground(new Color(255, 193, 7));
-                button.setForeground(Color.BLACK);
-            } else if (i == 6) { // Recycle bin (last option)
-                button.setBackground(new Color(220, 53, 69));
-                button.setForeground(Color.WHITE);
-            } else {
-                button.setBackground(new Color(40, 167, 69));
-                button.setForeground(Color.WHITE);
-            }
-
             final int index = i;
             button.addActionListener(new ActionListener() {
                 @Override
@@ -127,42 +201,127 @@ public class SafeCleanGUI extends JFrame {
             });
 
             cleanupButtons[i] = button;
-            panel.add(Box.createVerticalStrut(10));
+            panel.add(Box.createVerticalStrut(12));
             panel.add(button);
         }
 
         // Add "Run All" button
-        panel.add(Box.createVerticalStrut(20));
-        JButton runAllButton = new JButton("🚀 Run All Cleanup Operations");
-        runAllButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        runAllButton.setMaximumSize(new Dimension(300, 50));
-        runAllButton.setPreferredSize(new Dimension(300, 50));
-        runAllButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        runAllButton.setBackground(new Color(108, 117, 125));
-        runAllButton.setForeground(Color.WHITE);
+        panel.add(Box.createVerticalStrut(25));
+        runAllButton = createRunAllButton();
         runAllButton.addActionListener(e -> runAllCleanup());
         panel.add(runAllButton);
 
         return panel;
     }
 
+    private JButton createStyledButton(String text, int index) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Button background
+                Color bgColor;
+                if (index == 4 || index == 5) { // Advanced operations
+                    bgColor = getModel().isPressed() ? new Color(230, 173, 0) : new Color(255, 193, 7);
+                } else if (index == 6) { // Recycle bin
+                    bgColor = getModel().isPressed() ? new Color(200, 43, 59) : new Color(220, 53, 69);
+                } else {
+                    bgColor = getModel().isPressed() ? new Color(30, 147, 59) : new Color(40, 167, 69);
+                }
+                
+                if (getModel().isRollover() && !getModel().isPressed()) {
+                    bgColor = bgColor.brighter();
+                }
+                
+                g2d.setColor(bgColor);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+                
+                // Border
+                g2d.setColor(bgColor.darker());
+                g2d.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 8, 8);
+                
+                g2d.dispose();
+                super.paintComponent(g);
+            }
+        };
+        
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(320, 45));
+        button.setPreferredSize(new Dimension(320, 45));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        button.setForeground(Color.WHITE);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        
+        return button;
+    }
+
+    private JButton createRunAllButton() {
+        JButton button = new JButton("🚀 Run All Cleanup Operations") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                Color bgColor = getModel().isPressed() ? new Color(88, 97, 105) : new Color(108, 117, 125);
+                if (getModel().isRollover() && !getModel().isPressed()) {
+                    bgColor = bgColor.brighter();
+                }
+                
+                g2d.setColor(bgColor);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
+                
+                g2d.setColor(bgColor.darker());
+                g2d.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 10, 10);
+                
+                g2d.dispose();
+                super.paintComponent(g);
+            }
+        };
+        
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(320, 55));
+        button.setPreferredSize(new Dimension(320, 55));
+        button.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        button.setForeground(Color.WHITE);
+        button.setContentAreaFilled(false);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        
+        return button;
+    }
+
     private JPanel createOutputPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("Output Log"));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createLineBorder(new Color(45, 62, 80), 2), 
+            "Output Log",
+            0, 0, 
+            new Font("Segoe UI", Font.BOLD, 14),
+            new Color(45, 62, 80)
+        ));
+        panel.setBackground(Color.WHITE);
 
         outputArea = new JTextArea();
         outputArea.setEditable(false);
         outputArea.setFont(new Font("Consolas", Font.PLAIN, 12));
-        outputArea.setBackground(new Color(248, 249, 250));
-        outputArea.setText("Welcome to SafeClean WinX!\nSelect a cleanup operation to begin.\n\n" +
+        outputArea.setBackground(new Color(253, 253, 253));
+        outputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
+        outputArea.setText("🎯 Welcome to SafeClean WinX!\n" +
+                         "Select a cleanup operation to begin.\n\n" +
                          "⚠️ IMPORTANT WARNINGS:\n" +
                          "• Run this application as Administrator\n" +
                          "• Some operations permanently delete data\n" +
                          "• Backup important files before proceeding\n" +
-                         "• Advanced operations may affect system functionality\n\n");
+                         "• Advanced operations may affect system functionality\n\n" +
+                         "📝 Ready to start cleaning...\n");
 
         JScrollPane scrollPane = new JScrollPane(outputArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setBorder(null);
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
@@ -170,16 +329,18 @@ public class SafeCleanGUI extends JFrame {
 
     private JPanel createStatusPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(new EmptyBorder(10, 20, 10, 20));
-        panel.setBackground(new Color(248, 249, 250));
+        panel.setBorder(new EmptyBorder(15, 25, 15, 25));
+        panel.setBackground(new Color(45, 62, 80));
 
         progressBar = new JProgressBar();
         progressBar.setStringPainted(true);
-        progressBar.setString("Ready");
+        progressBar.setString("Ready to clean");
+        progressBar.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        progressBar.setForeground(new Color(40, 167, 69));
         
-        JLabel statusLabel = new JLabel("Status: Ready to clean | Author: 6a6ak | Version: 1.0");
-        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-        statusLabel.setForeground(new Color(108, 117, 125));
+        JLabel statusLabel = new JLabel("SafeClean WinX v2.0 | Created by 6a6ak | Professional System Cleanup Tool");
+        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        statusLabel.setForeground(new Color(200, 200, 200));
 
         panel.add(progressBar, BorderLayout.CENTER);
         panel.add(statusLabel, BorderLayout.SOUTH);
@@ -191,19 +352,18 @@ public class SafeCleanGUI extends JFrame {
         SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
             @Override
             protected Void doInBackground() throws Exception {
-                publish("Starting " + buttonLabels[operationIndex] + "...\n");
+                publish("🚀 Starting " + buttonLabels[operationIndex] + "...\n");
                 progressBar.setIndeterminate(true);
                 progressBar.setString("Processing...");
                 
-                // Disable all buttons during operation
                 setButtonsEnabled(false);
 
                 try {
                     String command = getPowerShellCommand(operationIndex);
                     executePowerShellCommand(command);
-                    publish(buttonLabels[operationIndex] + " completed successfully!\n\n");
+                    publish("✅ " + buttonLabels[operationIndex] + " completed successfully!\n\n");
                 } catch (Exception e) {
-                    publish("Error during " + buttonLabels[operationIndex] + ": " + e.getMessage() + "\n\n");
+                    publish("❌ Error during " + buttonLabels[operationIndex] + ": " + e.getMessage() + "\n\n");
                 }
 
                 return null;
@@ -220,7 +380,7 @@ public class SafeCleanGUI extends JFrame {
             @Override
             protected void done() {
                 progressBar.setIndeterminate(false);
-                progressBar.setString("Ready");
+                progressBar.setString("Ready to clean");
                 setButtonsEnabled(true);
             }
         };
@@ -359,27 +519,25 @@ public class SafeCleanGUI extends JFrame {
         for (JButton button : cleanupButtons) {
             button.setEnabled(enabled);
         }
+        runAllButton.setEnabled(enabled);
     }
 
     public static void main(String[] args) {
         // Set look and feel
         try {
-            // Try to set system look and feel
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
                     break;
-                } else if ("Windows".equals(info.getName())) {
+                } else if ("Nimbus".equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
         } catch (Exception e) {
-            // Use default look and feel if others fail
             System.out.println("Using default look and feel");
         }
 
-        // Check if running as administrator (Windows)
         SwingUtilities.invokeLater(() -> {
             SafeCleanGUI gui = new SafeCleanGUI();
             gui.setVisible(true);

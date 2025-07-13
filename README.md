@@ -1,139 +1,148 @@
-# SafeClean WinX PS1
+# SafeClean WinX - Java Application
 
-A PowerShell script for safely cleaning up Windows system files and freeing disk space. This utility provides a menu-driven interface to perform various cleanup operations commonly needed for Windows maintenance.
+A professional Java Swing desktop application for Windows system cleanup operations.
 
-## Features
+## 🚀 Features
 
-- 🗑️ **Clean Temporary Files** - Removes user and system temporary files
-- 🔄 **Clean Windows Update Cache** - Clears Windows Update download cache
-- 🖼️ **Clean Thumbnail Cache** - Removes Windows Explorer thumbnail cache
-- 📋 **Clear Event Logs** - Clears Windows Event Logs to free space
-- 🗂️ **Reduce WinSxS Folder** - Advanced cleanup of Windows Component Store
-- 💤 **Disable Hibernation** - Disables hibernation and removes hiberfil.sys
-- ♻️ **Clean Recycle Bin** - Empties the Recycle Bin completely
+- �️ **Modern GUI Interface** with custom icon
+- 🎨 **Professional Design** with gradient backgrounds and styled buttons
+- 🎯 **Individual Operations** - Run specific cleanup tasks
+- � **Run All Option** - Execute all cleanup operations sequentially
+- � **Real-time Output** - Live feedback and progress monitoring
+- ⚠️ **Safety Warnings** - Built-in warnings and confirmations
+- 🔐 **Administrator Detection** - Automatic privilege checking
 
-## Prerequisites
-
-- **Windows Operating System** (Windows 10/11 recommended)
-- **Administrator privileges** required
-- **PowerShell 5.1 or later**
-
-## Installation
-
-1. Clone this repository or download the script:
-   ```bash
-   git clone https://github.com/6a6ak/SafeClean_WinX_PS1.git
-   ```
-
-2. Navigate to the script directory:
-   ```powershell
-   cd SafeClean_WinX_PS1
-   ```
-
-## Usage
-
-### Running the Script
-
-1. **Right-click** on PowerShell and select **"Run as Administrator"**
-2. Navigate to the script location
-3. Execute the script:
-   ```powershell
-   .\SafeClean.ps1
-   ```
-
-### Menu Options
-
-The script presents an interactive menu with the following options:
+## 📁 Project Structure
 
 ```
-===== Safe Cleanup Menu =====
-1) Clean Temporary Files
-2) Clean Windows Update Cache
-3) Clean Thumbnail Cache
-4) Clear Event Logs
-5) Reduce WinSxS Folder (Advanced)
-6) Disable Hibernation & Remove hiberfil.sys
-7) Clean Recycle Bin
-0) Exit
+SafeClean_WinX_PS1/
+├── pom.xml                           # Maven configuration
+├── src/
+│   └── main/
+│       └── java/
+│           └── com/
+│               └── safeclean/
+│                   └── SafeCleanGUI.java    # Main application
+├── target/                           # Build output
+│   ├── SafeCleanWinX-2.0.0.jar     # Executable JAR
+│   └── SafeCleanWinX.exe            # Windows executable
+└── README.md                         # This file
 ```
 
-Simply enter the number corresponding to the cleanup operation you want to perform.
+## 🛠️ Building the Application
 
-## What Each Option Does
+### Prerequisites
+- Java JDK 8 or higher
+- Maven 3.6 or higher (optional, for advanced builds)
 
-### 1. Clean Temporary Files
-- Clears `%TEMP%` (user temporary files)
-- Clears `C:\Windows\Temp` (system temporary files)
+### Simple Build (Using Maven)
+```bash
+mvn clean package
+```
 
-### 2. Clean Windows Update Cache
-- Stops Windows Update service
-- Clears `C:\Windows\SoftwareDistribution\Download`
-- Restarts Windows Update service
+### Manual Build
+```bash
+# Compile
+javac -d target/classes -cp . com/safeclean/SafeCleanGUI.java
 
-### 3. Clean Thumbnail Cache
-- Removes thumbnail cache from `%LOCALAPPDATA%\Microsoft\Windows\Explorer`
+# Create JAR
+jar cfe target/SafeCleanWinX.jar com.safeclean.SafeCleanGUI -C target/classes .
+```
 
-### 4. Clear Event Logs
-- Clears all Windows Event Logs
-- Provides feedback on which logs were cleared or skipped
+## 🏃 Running the Application
 
-### 5. Reduce WinSxS Folder (Advanced)
-- Uses DISM to clean up Windows Component Store
-- Runs `StartComponentCleanup` with `ResetBase` option
-- **Warning**: This is an advanced operation
+### From JAR
+```bash
+java -jar target/SafeCleanWinX-2.0.0.jar
+```
 
-### 6. Disable Hibernation & Remove hiberfil.sys
-- Disables Windows hibernation feature
-- Removes the hibernation file (hiberfil.sys) which can be several GB in size
-- Frees up space equal to your system's RAM size
-- **Note**: Can be re-enabled later with `powercfg /hibernate on`
+### From Source
+```bash
+java -cp target/classes com.safeclean.SafeCleanGUI
+```
 
-### 7. Clean Recycle Bin
-- Completely empties the Recycle Bin
-- Removes all items permanently
+### Windows Executable
+After building with Maven, run:
+```
+target/SafeCleanWinX.exe
+```
 
-## Safety Features
+## 🎨 Custom Features
 
-- **Error handling**: Operations continue even if individual items can't be deleted
-- **Path validation**: Checks if paths exist before attempting cleanup
-- **Service management**: Properly stops and starts services when needed
-- **Informative output**: Shows what's being cleaned and completion status
+### Professional Icon
+- Custom-drawn cleaning brush icon
+- Gradient background with professional colors
+- "SC" text overlay for brand recognition
+- 64x64 high-quality rendering
 
-## Important Notes
+### Enhanced UI
+- **Header**: Gradient background with logo and warnings
+- **Buttons**: Color-coded operations (Green=Safe, Yellow=Advanced, Red=Permanent)
+- **Output**: Professional console-style output with real-time updates
+- **Status**: Progress tracking with informative messages
 
-⚠️ **Administrator Rights Required**: This script must be run as Administrator to access system folders and services.
+## 🎯 Cleanup Operations
 
-⚠️ **Data Loss Warning**: Some operations (especially Recycle Bin and Event Logs) will permanently delete data. Use with caution.
+1. **Clean Temporary Files** - Removes user and system temp files
+2. **Clean Windows Update Cache** - Clears Windows Update downloads
+3. **Clean Thumbnail Cache** - Removes Explorer thumbnail cache
+4. **Clear Event Logs** - Clears Windows Event Logs (filtered for safety)
+5. **Reduce WinSxS Folder** - Advanced component store cleanup
+6. **Disable Hibernation** - Removes hiberfil.sys and disables hibernation
+7. **Clean Recycle Bin** - Permanently empties recycle bin
 
-⚠️ **WinSxS Cleanup**: Option 5 is an advanced operation that modifies the Windows Component Store. Only use if you understand the implications.
+## 🔧 Development
 
-⚠️ **Hibernation Disable**: Option 6 will disable hibernation permanently and remove hiberfil.sys. This affects fast startup and hibernate features. Can be re-enabled later if needed.
+### Maven Commands
+```bash
+# Clean and compile
+mvn clean compile
 
-## Compatibility
+# Run tests (if any)
+mvn test
 
-- ✅ Windows 10
-- ✅ Windows 11
-- ✅ Windows Server 2016+
-- ⚠️ Windows 8.1 (limited testing)
+# Package JAR
+mvn package
 
-## Contributing
+# Create Windows executable
+mvn package  # Includes Launch4j execution
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+### IDE Setup
+- Import as Maven project
+- Main class: `com.safeclean.SafeCleanGUI`
+- Java version: 8+
 
-## License
+## 📦 Distribution
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The build process creates:
+1. **JAR file**: `target/SafeCleanWinX-2.0.0.jar` - Cross-platform Java application
+2. **EXE file**: `target/SafeCleanWinX.exe` - Windows native executable
+3. **Icon**: Embedded custom icon for professional appearance
 
-**Testing Notice**: While this script has been tested by the author, it is provided as-is and use is entirely at your own risk.
+## ⚠️ Important Notes
 
-## Disclaimer
+- **Administrator privileges required** for proper functionality
+- **Windows-specific operations** - designed for Windows 10/11
+- **Data deletion warning** - some operations permanently delete files
+- **System modification** - advanced operations modify Windows components
 
-This software is provided "as is" without warranty of any kind. Use at your own risk. Always backup important data before running cleanup operations. While the author has tested this script, each system configuration is unique and results may vary.
+## 🚀 Quick Start
 
-## Author
+1. **Download/Clone** the repository
+2. **Build** using `mvn package` or manual compilation
+3. **Run as Administrator** - right-click executable and "Run as administrator"
+4. **Select operations** - use individual buttons or "Run All"
+5. **Monitor progress** - watch real-time output log
 
-Created for safe and efficient Windows system maintenance.
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+## 👨‍💻 Author
+
+Created by **6a6ak** - Professional Windows system maintenance tool.
 
 ---
 
-⭐ If this script helped you free up disk space, please give it a star!
+⭐ **Professional. Reliable. Effective.** ⭐

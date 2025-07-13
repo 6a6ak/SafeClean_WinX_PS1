@@ -68,58 +68,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Launch4j Plugin for creating Windows executable -->
-            <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>2.1.3</version>
-                <executions>
-                    <execution>
-                        <id>l4j-clui</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <headerType>gui</headerType>
-                            <jar>target/SafeCleanWinX-${version}.jar</jar>
-                            <outfile>target/SafeCleanWinX.exe</outfile>
-                            <downloadUrl>https://www.java.com/download/</downloadUrl>
-                            <classPath>
-                                <mainClass>${main.class}</mainClass>
-                                <preCp>anything</preCp>
-                            </classPath>
-                            <icon>src/main/resources/icon.ico</icon>
-                            <jre>
-                                <bundledJre64Bit>false</bundledJre64Bit>
-                                <bundledJreAsFallback>false</bundledJreAsFallback>
-                                <minVersion>1.8.0</minVersion>
-                                <jdkPreference>preferJre</jdkPreference>
-                                <runtimeBits>64/32</runtimeBits>
-                            </jre>
-                            <versionInfo>
-                                <fileVersion>2.0.0.0</fileVersion>
-                                <txtFileVersion>${version}</txtFileVersion>
-                                <fileDescription>SafeClean WinX - System Cleanup Tool</fileDescription>
-                                <copyright>2025 6a6ak</copyright>
-                                <productVersion>2.0.0.0</productVersion>
-                                <txtProductVersion>${version}</txtProductVersion>
-                                <productName>SafeClean WinX</productName>
-                                <companyName>6a6ak</companyName>
-                                <internalName>SafeCleanWinX</internalName>
-                                <originalFilename>SafeCleanWinX.exe</originalFilename>
-                            </versionInfo>
-                            <messages>
-                                <startupErr>An error occurred while starting the application.</startupErr>
-                                <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
-                                <jreVersionErr>This application requires a Java Runtime Environment version 1.8 or higher.</jreVersionErr>
-                                <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.</launcherErr>
-                            </messages>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>

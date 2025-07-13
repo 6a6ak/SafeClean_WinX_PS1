@@ -486,7 +486,7 @@ public class SafeCleanGUI extends JFrame {
                     }
 
                     publish("=".repeat(50) + "\n");
-                    publish("🎉 All cleanup operations completed!\n");
+                    publish("All cleanup operations completed!\n");
                     return null;
                 }
 

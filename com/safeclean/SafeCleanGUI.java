@@ -283,7 +283,7 @@ public class SafeCleanGUI extends JFrame {
     }
 
     private JButton createRunAllButton() {
-        JButton button = new JButton("🚀 Run All Cleanup Operations") {
+        JButton button = new JButton("Run All Cleanup Operations") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
@@ -375,7 +375,7 @@ public class SafeCleanGUI extends JFrame {
         SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
             @Override
             protected Void doInBackground() throws Exception {
-                publish("🚀 Starting " + buttonLabels[operationIndex] + "...\n");
+                publish("Starting " + buttonLabels[operationIndex] + "...\n");
                 progressBar.setIndeterminate(true);
                 progressBar.setString("Processing...");
                 
@@ -384,9 +384,9 @@ public class SafeCleanGUI extends JFrame {
                 try {
                     String command = getPowerShellCommand(operationIndex);
                     executePowerShellCommand(command);
-                    publish("✅ " + buttonLabels[operationIndex] + " completed successfully!\n\n");
+                    publish(buttonLabels[operationIndex] + " completed successfully!\n\n");
                 } catch (Exception e) {
-                    publish("❌ Error during " + buttonLabels[operationIndex] + ": " + e.getMessage() + "\n\n");
+                    publish("Error during " + buttonLabels[operationIndex] + ": " + e.getMessage() + "\n\n");
                 }
 
                 return null;
@@ -493,7 +493,7 @@ public class SafeCleanGUI extends JFrame {
                     progressBar.setIndeterminate(true);
                     progressBar.setString("Running all operations...");
                     
-                    publish("🚀 Starting comprehensive system cleanup...\n");
+                    publish("Starting comprehensive system cleanup...\n");
                     publish("=".repeat(50) + "\n");
 
                     for (int i = 0; i < buttonLabels.length; i++) {
@@ -501,14 +501,14 @@ public class SafeCleanGUI extends JFrame {
                         try {
                             String command = getPowerShellCommand(i);
                             executePowerShellCommand(command);
-                            publish("✅ " + buttonLabels[i] + " completed\n\n");
+                            publish(buttonLabels[i] + " completed\n\n");
                         } catch (Exception e) {
-                            publish("❌ Error in " + buttonLabels[i] + ": " + e.getMessage() + "\n\n");
+                            publish("Error in " + buttonLabels[i] + ": " + e.getMessage() + "\n\n");
                         }
                     }
 
                     publish("=".repeat(50) + "\n");
-                    publish("🎉 All cleanup operations completed!\n");
+                    publish("All cleanup operations completed!\n");
                     return null;
                 }
 
@@ -567,7 +567,7 @@ public class SafeCleanGUI extends JFrame {
 
             // Show admin warning
             JOptionPane.showMessageDialog(gui,
-                "⚠️ ADMINISTRATOR REQUIRED ⚠️\n\n" +
+                "ADMINISTRATOR REQUIRED\n\n" +
                 "This application requires Administrator privileges to function properly.\n" +
                 "Please ensure you are running this as Administrator.\n\n" +
                 "Right-click the executable and select 'Run as Administrator'",

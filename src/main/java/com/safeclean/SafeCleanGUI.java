@@ -362,9 +362,9 @@ public class SafeCleanGUI extends JFrame {
                 try {
                     String command = getPowerShellCommand(operationIndex);
                     executePowerShellCommand(command);
-                    publish("✅ " + buttonLabels[operationIndex] + " completed successfully!\n\n");
+                    publish(buttonLabels[operationIndex] + " completed successfully!\n\n");
                 } catch (Exception e) {
-                    publish("❌ Error during " + buttonLabels[operationIndex] + ": " + e.getMessage() + "\n\n");
+                    publish("Error during " + buttonLabels[operationIndex] + ": " + e.getMessage() + "\n\n");
                 }
 
                 return null;
@@ -479,9 +479,9 @@ public class SafeCleanGUI extends JFrame {
                         try {
                             String command = getPowerShellCommand(i);
                             executePowerShellCommand(command);
-                            publish("✅ " + buttonLabels[i] + " completed\n\n");
+                            publish(buttonLabels[i] + " completed\n\n");
                         } catch (Exception e) {
-                            publish("❌ Error in " + buttonLabels[i] + ": " + e.getMessage() + "\n\n");
+                            publish("Error in " + buttonLabels[i] + ": " + e.getMessage() + "\n\n");
                         }
                     }
 

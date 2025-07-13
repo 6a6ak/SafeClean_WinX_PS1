@@ -40,16 +40,28 @@ function Clear-ThumbnailCache {
 
 function Clear-EventLogs {
     Write-Host "Clearing Event Logs..."
-    $logs = wevtutil el
+    
+    # Get event logs, excluding critical system logs
+    $logs = wevtutil el | Where-Object { $_ -notmatch "Security|Setup|System" }
+    $cleared = 0
+    $skipped = 0
+    
     foreach ($log in $logs) {
         try {
-            wevtutil cl $log
-            Write-Host "Cleared: $log"
+            wevtutil cl $log 2>$null
+            $cleared++
+            if ($cleared % 10 -eq 0) {
+                Write-Host "Cleared $cleared logs..."
+            }
         } catch {
-            Write-Host "Skipped: $log (`$($_.Exception.Message)`)" -ForegroundColor Yellow
+            $skipped++
+            if ($skipped -le 5) {
+                Write-Host "Skipped: $log (Access denied)" -ForegroundColor Yellow
+            }
         }
     }
-    Write-Host "Event logs clearing completed." -ForegroundColor Green
+    
+    Write-Host "Event logs clearing completed. Cleared: $cleared, Skipped: $skipped" -ForegroundColor Green
 }
 
 function Clean-WinSxS {

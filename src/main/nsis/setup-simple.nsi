@@ -1,0 +1,116 @@
+; SafeClean Professional Windows Installer - Simple Version
+; Created by 6a6ak - https://github.com/6a6ak/SafeClean_WinX_PS1
+
+!define PRODUCT_NAME "SafeClean"
+!define PRODUCT_VERSION "2.0.0"
+!define PRODUCT_PUBLISHER "6a6ak"
+!define PRODUCT_WEB_SITE "https://github.com/6a6ak/SafeClean_WinX_PS1"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\SafeClean.exe"
+!define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
+!define PRODUCT_UNINST_ROOT_KEY "HKLM"
+
+; MUI 2.0 compatible ------
+!include "MUI2.nsh"
+
+; MUI Settings
+!define MUI_ABORTWARNING
+!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+
+; Welcome page
+!insertmacro MUI_PAGE_WELCOME
+; Directory page
+!insertmacro MUI_PAGE_DIRECTORY
+; Components page
+!insertmacro MUI_PAGE_COMPONENTS
+; Instfiles page
+!insertmacro MUI_PAGE_INSTFILES
+; Finish page
+!define MUI_FINISHPAGE_RUN "$INSTDIR\SafeClean.exe"
+!insertmacro MUI_PAGE_FINISH
+
+; Uninstaller pages
+!insertmacro MUI_UNPAGE_INSTFILES
+
+; Language files
+!insertmacro MUI_LANGUAGE "English"
+
+; MUI end ------
+
+Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
+OutFile "..\..\..\target\SafeClean-Setup.exe"
+InstallDir "$PROGRAMFILES\SafeClean"
+InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
+ShowInstDetails show
+ShowUnInstDetails show
+
+; Request administrator privileges
+RequestExecutionLevel admin
+
+; Main Installation Section
+Section "SafeClean Application (Required)" SEC01
+  SectionIn RO
+  SetOutPath "$INSTDIR"
+  SetOverwrite ifnewer
+  
+  ; Copy main executable
+  File /oname=SafeClean.exe "..\..\..\target\SafeClean.exe"
+  
+  ; Copy JAR file as backup (optional)
+  IfFileExists "..\..\..\target\SafeClean-2.0.0.jar" 0 +2
+  File /oname=SafeClean-2.0.0.jar "..\..\..\target\SafeClean-2.0.0.jar"
+  
+  ; Create uninstaller
+  WriteUninstaller "$INSTDIR\uninst.exe"
+  
+  ; Registry entries
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\SafeClean.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\SafeClean.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+SectionEnd
+
+; Desktop Shortcut Section
+Section "Desktop Shortcut" SEC02
+  CreateShortCut "$DESKTOP\SafeClean.lnk" "$INSTDIR\SafeClean.exe" "" "$INSTDIR\SafeClean.exe" 0
+SectionEnd
+
+; Start Menu Shortcuts Section
+Section "Start Menu Shortcuts" SEC03
+  CreateDirectory "$SMPROGRAMS\SafeClean"
+  CreateShortCut "$SMPROGRAMS\SafeClean\SafeClean.lnk" "$INSTDIR\SafeClean.exe" "" "$INSTDIR\SafeClean.exe" 0
+  CreateShortCut "$SMPROGRAMS\SafeClean\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
+SectionEnd
+
+; Component Descriptions
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC01} "SafeClean application files (required)"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC02} "Create a desktop shortcut for SafeClean"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} "Create Start Menu shortcuts for SafeClean"
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+; Uninstaller Section
+Section Uninstall
+  ; Remove files
+  Delete "$INSTDIR\SafeClean.exe"
+  Delete "$INSTDIR\SafeClean-2.0.0.jar"
+  Delete "$INSTDIR\uninst.exe"
+  
+  ; Remove shortcuts
+  Delete "$DESKTOP\SafeClean.lnk"
+  Delete "$SMPROGRAMS\SafeClean\SafeClean.lnk"
+  Delete "$SMPROGRAMS\SafeClean\Uninstall.lnk"
+  RMDir "$SMPROGRAMS\SafeClean"
+  
+  ; Remove directory
+  RMDir "$INSTDIR"
+  
+  ; Remove registry entries
+  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
+  
+  SetAutoClose true
+SectionEnd

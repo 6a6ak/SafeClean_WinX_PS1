@@ -260,7 +260,7 @@ public class SafeCleanGUI extends JFrame {
     }
 
     private JButton createRunAllButton() {
-        JButton button = new JButton("🚀 Run All Cleanup Operations") {
+        JButton button = new JButton("Run All Cleanup Operations") {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g.create();
@@ -310,9 +310,9 @@ public class SafeCleanGUI extends JFrame {
         outputArea.setFont(new Font("Consolas", Font.PLAIN, 12));
         outputArea.setBackground(new Color(253, 253, 253));
         outputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        outputArea.setText("🎯 Welcome to SafeClean WinX!\n" +
+        outputArea.setText("Welcome to SafeClean WinX!\n" +
                          "Select a cleanup operation to begin.\n\n" +
-                         "⚠️ IMPORTANT WARNINGS:\n" +
+                         "IMPORTANT WARNINGS:\n" +
                          "• Run this application as Administrator\n" +
                          "• Some operations permanently delete data\n" +
                          "• Backup important files before proceeding\n" +
@@ -353,7 +353,7 @@ public class SafeCleanGUI extends JFrame {
         SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
             @Override
             protected Void doInBackground() throws Exception {
-                publish("🚀 Starting " + buttonLabels[operationIndex] + "...\n");
+                publish("Starting " + buttonLabels[operationIndex] + "...\n");
                 progressBar.setIndeterminate(true);
                 progressBar.setString("Processing...");
                 
@@ -471,7 +471,7 @@ public class SafeCleanGUI extends JFrame {
                     progressBar.setIndeterminate(true);
                     progressBar.setString("Running all operations...");
                     
-                    publish("🚀 Starting comprehensive system cleanup...\n");
+                    publish("Starting comprehensive system cleanup...\n");
                     publish("=".repeat(50) + "\n");
 
                     for (int i = 0; i < buttonLabels.length; i++) {
@@ -545,7 +545,7 @@ public class SafeCleanGUI extends JFrame {
 
             // Show admin warning
             JOptionPane.showMessageDialog(gui,
-                "⚠️ ADMINISTRATOR REQUIRED ⚠️\n\n" +
+                "ADMINISTRATOR REQUIRED\n\n" +
                 "This application requires Administrator privileges to function properly.\n" +
                 "Please ensure you are running this as Administrator.\n\n" +
                 "Right-click the executable and select 'Run as Administrator'",

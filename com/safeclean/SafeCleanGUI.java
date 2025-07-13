@@ -141,8 +141,31 @@ public class SafeCleanGUI extends JFrame {
         // Add warning section
         JPanel warningPanel = new JPanel(new BorderLayout());
         warningPanel.setOpaque(false);
-        JLabel warningIcon = new JLabel("⚠️");
-        warningIcon.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        
+        // Create custom warning icon
+        JLabel warningIcon = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                int size = 24;
+                // Draw warning triangle
+                g2d.setColor(new Color(255, 193, 7));
+                int[] xPoints = {size/2, size-4, 4};
+                int[] yPoints = {4, size-4, size-4};
+                g2d.fillPolygon(xPoints, yPoints, 3);
+                
+                // Draw exclamation mark
+                g2d.setColor(Color.WHITE);
+                g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2d.drawLine(size/2, 8, size/2, 16);
+                g2d.fillOval(size/2-1, 18, 2, 2);
+            }
+        };
+        warningIcon.setPreferredSize(new Dimension(24, 24));
+        
         JLabel warningText = new JLabel("Admin Required");
         warningText.setFont(new Font("Segoe UI", Font.BOLD, 12));
         warningText.setForeground(new Color(255, 193, 7));
@@ -310,14 +333,14 @@ public class SafeCleanGUI extends JFrame {
         outputArea.setFont(new Font("Consolas", Font.PLAIN, 12));
         outputArea.setBackground(new Color(253, 253, 253));
         outputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        outputArea.setText("🎯 Welcome to SafeClean WinX!\n" +
+        outputArea.setText("SafeClean WinX - Ready to Start!\n" +
                          "Select a cleanup operation to begin.\n\n" +
-                         "⚠️ IMPORTANT WARNINGS:\n" +
+                         "IMPORTANT WARNINGS:\n" +
                          "• Run this application as Administrator\n" +
                          "• Some operations permanently delete data\n" +
                          "• Backup important files before proceeding\n" +
                          "• Advanced operations may affect system functionality\n\n" +
-                         "📝 Ready to start cleaning...\n");
+                         "Ready to start cleaning...\n");
 
         JScrollPane scrollPane = new JScrollPane(outputArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

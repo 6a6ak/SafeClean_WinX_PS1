@@ -5,7 +5,12 @@ echo Starting application...
 echo.
 
 cd /d "%~dp0"
-java -jar target/SafeCleanWinX-2.0.0.jar
+if exist "target\SafeCleanWinX-2.0.0.jar" (
+    java -jar target/SafeCleanWinX-2.0.0.jar
+) else (
+    echo ERROR: JAR file not found. Please build the project first with: mvn package
+    echo.
+)
 
 if errorlevel 1 (
     echo.

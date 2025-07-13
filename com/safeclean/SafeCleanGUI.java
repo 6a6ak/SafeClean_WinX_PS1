@@ -37,6 +37,9 @@ public class SafeCleanGUI extends JFrame {
         setLocationRelativeTo(null);
         setIconImage(createCustomIcon());
 
+        // Create menu bar
+        setJMenuBar(createMenuBar());
+
         // Create header panel
         JPanel headerPanel = createHeaderPanel();
         add(headerPanel, BorderLayout.NORTH);
@@ -93,6 +96,57 @@ public class SafeCleanGUI extends JFrame {
         
         g2d.dispose();
         return icon;
+    }
+
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(new Color(248, 249, 250));
+        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(215, 219, 221)));
+
+        // Log Menu
+        JMenu logMenu = new JMenu("Log");
+        logMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        JMenuItem clearLogItem = new JMenuItem("Clear Output Log");
+        clearLogItem.addActionListener(e -> {
+            outputArea.setText("SafeClean WinX - Ready to Start!\n" +
+                            "Select a cleanup operation to begin.\n\n" +
+                            "IMPORTANT WARNINGS:\n" +
+                            "• Run this application as Administrator\n" +
+                            "• Some operations permanently delete data\n" +
+                            "• Backup important files before proceeding\n" +
+                            "• Advanced operations may affect system functionality\n\n" +
+                            "Ready to start cleaning...\n");
+        });
+        
+        JMenuItem saveLogItem = new JMenuItem("Save Log to File");
+        saveLogItem.addActionListener(e -> saveLogToFile());
+        
+        logMenu.add(clearLogItem);
+        logMenu.add(saveLogItem);
+
+        // Help Menu
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        JMenuItem aboutItem = new JMenuItem("About SafeClean WinX");
+        aboutItem.addActionListener(e -> showAboutDialog());
+        
+        JMenuItem githubItem = new JMenuItem("View on GitHub");
+        githubItem.addActionListener(e -> openGitHubRepo());
+        
+        JMenuItem userGuideItem = new JMenuItem("User Guide");
+        userGuideItem.addActionListener(e -> showUserGuide());
+        
+        helpMenu.add(aboutItem);
+        helpMenu.addSeparator();
+        helpMenu.add(githubItem);
+        helpMenu.add(userGuideItem);
+
+        menuBar.add(logMenu);
+        menuBar.add(helpMenu);
+        
+        return menuBar;
     }
 
     private JPanel createHeaderPanel() {
@@ -543,6 +597,117 @@ public class SafeCleanGUI extends JFrame {
             button.setEnabled(enabled);
         }
         runAllButton.setEnabled(enabled);
+    }
+
+    private void saveLogToFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Log File");
+        fileChooser.setSelectedFile(new java.io.File("SafeClean_Log_" + 
+                                    new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()) + ".txt"));
+        
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            try (java.io.FileWriter writer = new java.io.FileWriter(fileChooser.getSelectedFile())) {
+                writer.write(outputArea.getText());
+                JOptionPane.showMessageDialog(this, 
+                    "Log saved successfully to:\n" + fileChooser.getSelectedFile().getAbsolutePath(),
+                    "Log Saved", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error saving log file:\n" + e.getMessage(),
+                    "Save Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void showAboutDialog() {
+        String aboutMessage = 
+            "SafeClean WinX v2.0.0\n" +
+            "Professional Windows System Cleanup Tool\n\n" +
+            "Created by: 6a6ak\n" +
+            "Repository: github.com/6a6ak/SafeClean_WinX_PS1\n" +
+            "License: MIT License\n\n" +
+            "Java GUI Version Features:\n" +
+            "• Professional UI with custom graphics\n" +
+            "• Real-time PowerShell execution\n" +
+            "• Comprehensive system cleanup operations\n" +
+            "• Windows 10/11 compatible\n" +
+            "• Administrator privilege handling\n\n" +
+            "Copyright (c) 2025 6a6ak\n" +
+            "This software is provided \"as is\" without warranty.";
+            
+        JOptionPane.showMessageDialog(this, 
+            aboutMessage,
+            "About SafeClean WinX", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void openGitHubRepo() {
+        try {
+            String url = "https://github.com/6a6ak/SafeClean_WinX_PS1";
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            } else {
+                // Fallback for systems without Desktop support
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Could not open browser. Please visit:\n" +
+                "https://github.com/6a6ak/SafeClean_WinX_PS1\n\n" +
+                "Error: " + e.getMessage(),
+                "Browser Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showUserGuide() {
+        String userGuideMessage = 
+            "SafeClean WinX User Guide\n\n" +
+            "CLEANUP OPERATIONS:\n\n" +
+            "1. Clean Temporary Files\n" +
+            "   • Removes user and system temp files\n" +
+            "   • Safe operation, run anytime\n\n" +
+            "2. Clean Windows Update Cache\n" +
+            "   • Clears Windows Update downloads\n" +
+            "   • Frees space from old update files\n\n" +
+            "3. Clean Thumbnail Cache\n" +
+            "   • Removes Explorer thumbnail cache\n" +
+            "   • Improves folder browsing performance\n\n" +
+            "4. Clear Event Logs\n" +
+            "   • Clears Windows Event Logs (filtered for safety)\n" +
+            "   • Protects Security, Setup, and System logs\n\n" +
+            "5. Reduce WinSxS Folder (Advanced)\n" +
+            "   • ADVANCED: Cleans Windows Component Store\n" +
+            "   • Use only if you understand implications\n\n" +
+            "6. Disable Hibernation & Remove hiberfil.sys\n" +
+            "   • Disables hibernation feature\n" +
+            "   • Removes hiberfil.sys file (saves GB of space)\n" +
+            "   • Can be re-enabled later if needed\n\n" +
+            "7. Clean Recycle Bin\n" +
+            "   • Permanently empties Recycle Bin\n" +
+            "   • WARNING: Data cannot be recovered\n\n" +
+            "IMPORTANT NOTES:\n" +
+            "• Always run as Administrator\n" +
+            "• Backup important data before cleanup\n" +
+            "• Advanced operations may affect system functionality\n" +
+            "• Some operations permanently delete data";
+            
+        JTextArea textArea = new JTextArea(userGuideMessage);
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        textArea.setBackground(new Color(248, 249, 250));
+        textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(500, 400));
+        
+        JOptionPane.showMessageDialog(this, 
+            scrollPane,
+            "SafeClean WinX User Guide", 
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {

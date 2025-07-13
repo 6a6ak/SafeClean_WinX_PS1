@@ -37,6 +37,9 @@ public class SafeCleanGUI extends JFrame {
         setLocationRelativeTo(null);
         setIconImage(createCustomIcon());
 
+        // Create menu bar
+        setJMenuBar(createMenuBar());
+
         // Create header panel
         JPanel headerPanel = createHeaderPanel();
         add(headerPanel, BorderLayout.NORTH);
@@ -95,6 +98,57 @@ public class SafeCleanGUI extends JFrame {
         return icon;
     }
 
+    private JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(new Color(248, 249, 250));
+        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(215, 219, 221)));
+
+        // Log Menu
+        JMenu logMenu = new JMenu("Log");
+        logMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        JMenuItem clearLogItem = new JMenuItem("Clear Output Log");
+        clearLogItem.addActionListener(e -> {
+            outputArea.setText("Welcome to SafeClean WinX!\n" +
+                            "Select a cleanup operation to begin.\n\n" +
+                            "IMPORTANT WARNINGS:\n" +
+                            "• Run this application as Administrator\n" +
+                            "• Some operations permanently delete data\n" +
+                            "• Backup important files before proceeding\n" +
+                            "• Advanced operations may affect system functionality\n\n" +
+                            "Ready to start cleaning...\n");
+        });
+        
+        JMenuItem saveLogItem = new JMenuItem("Save Log to File");
+        saveLogItem.addActionListener(e -> saveLogToFile());
+        
+        logMenu.add(clearLogItem);
+        logMenu.add(saveLogItem);
+
+        // Help Menu
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        JMenuItem aboutItem = new JMenuItem("About SafeClean WinX");
+        aboutItem.addActionListener(e -> showAboutDialog());
+        
+        JMenuItem githubItem = new JMenuItem("View on GitHub");
+        githubItem.addActionListener(e -> openGitHubRepo());
+        
+        JMenuItem userGuideItem = new JMenuItem("User Guide");
+        userGuideItem.addActionListener(e -> showUserGuide());
+        
+        helpMenu.add(aboutItem);
+        helpMenu.addSeparator();
+        helpMenu.add(githubItem);
+        helpMenu.add(userGuideItem);
+
+        menuBar.add(logMenu);
+        menuBar.add(helpMenu);
+        
+        return menuBar;
+    }
+
     private JPanel createHeaderPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(new EmptyBorder(20, 25, 20, 25));
@@ -141,8 +195,31 @@ public class SafeCleanGUI extends JFrame {
         // Add warning section
         JPanel warningPanel = new JPanel(new BorderLayout());
         warningPanel.setOpaque(false);
-        JLabel warningIcon = new JLabel("⚠️");
-        warningIcon.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        
+        // Create custom warning icon
+        JLabel warningIcon = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                int size = 24;
+                // Draw warning triangle
+                g2d.setColor(new Color(255, 193, 7));
+                int[] xPoints = {size/2, size-4, 4};
+                int[] yPoints = {4, size-4, size-4};
+                g2d.fillPolygon(xPoints, yPoints, 3);
+                
+                // Draw exclamation mark
+                g2d.setColor(Color.WHITE);
+                g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2d.drawLine(size/2, 8, size/2, 16);
+                g2d.fillOval(size/2-1, 18, 2, 2);
+            }
+        };
+        warningIcon.setPreferredSize(new Dimension(24, 24));
+        
         JLabel warningText = new JLabel("Admin Required");
         warningText.setFont(new Font("Segoe UI", Font.BOLD, 12));
         warningText.setForeground(new Color(255, 193, 7));
@@ -317,7 +394,7 @@ public class SafeCleanGUI extends JFrame {
                          "• Some operations permanently delete data\n" +
                          "• Backup important files before proceeding\n" +
                          "• Advanced operations may affect system functionality\n\n" +
-                         "📝 Ready to start cleaning...\n");
+                         "Ready to start cleaning...\n");
 
         JScrollPane scrollPane = new JScrollPane(outputArea);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -392,40 +469,126 @@ public class SafeCleanGUI extends JFrame {
     private String getPowerShellCommand(int operationIndex) {
         switch (operationIndex) {
             case 0: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "function Clear-Folder($Path) { if (Test-Path $Path) { Get-ChildItem -Path $Path -Recurse -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue; Write-Host 'Cleared: $Path' } else { Write-Host 'Path does not exist: $Path' } }; " +
-                          "Write-Host 'Cleaning TEMP files...'; Clear-Folder '$env:TEMP'; Clear-Folder 'C:\\Windows\\Temp'; Write-Host 'Temporary files cleaned.' }\"";
+                          "function Clear-Folder($Path) { " +
+                          "Write-Host \"Checking path: $Path\"; " +
+                          "if (Test-Path $Path) { " +
+                          "$items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "if ($items) { " +
+                          "$count = ($items | Measure-Object).Count; " +
+                          "Write-Host \"Found $count items in $Path\"; " +
+                          "Remove-Item -Path $Path\\* -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "Write-Host \"Cleared: $Path\"; " +
+                          "} else { " +
+                          "Write-Host \"No items found in $Path\"; " +
+                          "} " +
+                          "} else { " +
+                          "Write-Host \"Path does not exist: $Path\"; " +
+                          "} " +
+                          "}; " +
+                          "Write-Host 'Starting temporary files cleanup...'; " +
+                          "Clear-Folder '$env:TEMP'; " +
+                          "Clear-Folder 'C:\\Windows\\Temp'; " +
+                          "Write-Host 'Temporary files cleanup completed.' }\"";
             
             case 1: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "function Clear-Folder($Path) { if (Test-Path $Path) { Get-ChildItem -Path $Path -Recurse -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue; Write-Host 'Cleared: $Path' } else { Write-Host 'Path does not exist: $Path' } }; " +
-                          "Write-Host 'Cleaning Windows Update cache...'; Stop-Service -Name wuauserv -Force; Clear-Folder 'C:\\Windows\\SoftwareDistribution\\Download'; Start-Service -Name wuauserv; Write-Host 'Windows Update cache cleaned.' }\"";
+                          "function Clear-Folder($Path) { " +
+                          "Write-Host \"Checking path: $Path\"; " +
+                          "if (Test-Path $Path) { " +
+                          "$items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "if ($items) { " +
+                          "$count = ($items | Measure-Object).Count; " +
+                          "Write-Host \"Found $count items in $Path\"; " +
+                          "Remove-Item -Path $Path\\* -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "Write-Host \"Cleared: $Path\"; " +
+                          "} else { " +
+                          "Write-Host \"No items found in $Path\"; " +
+                          "} " +
+                          "} else { " +
+                          "Write-Host \"Path does not exist: $Path\"; " +
+                          "} " +
+                          "}; " +
+                          "Write-Host 'Starting Windows Update cache cleanup...'; " +
+                          "Write-Host 'Stopping Windows Update service...'; " +
+                          "Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue; " +
+                          "Clear-Folder 'C:\\Windows\\SoftwareDistribution\\Download'; " +
+                          "Write-Host 'Restarting Windows Update service...'; " +
+                          "Start-Service -Name wuauserv -ErrorAction SilentlyContinue; " +
+                          "Write-Host 'Windows Update cache cleanup completed.' }\"";
             
             case 2: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "function Clear-Folder($Path) { if (Test-Path $Path) { Get-ChildItem -Path $Path -Recurse -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue; Write-Host 'Cleared: $Path' } else { Write-Host 'Path does not exist: $Path' } }; " +
-                          "Write-Host 'Cleaning Thumbnail cache...'; Clear-Folder '$env:LOCALAPPDATA\\Microsoft\\Windows\\Explorer'; Write-Host 'Thumbnail cache cleaned.' }\"";
+                          "function Clear-Folder($Path) { " +
+                          "Write-Host \"Checking path: $Path\"; " +
+                          "if (Test-Path $Path) { " +
+                          "$items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "if ($items) { " +
+                          "$count = ($items | Measure-Object).Count; " +
+                          "Write-Host \"Found $count items in $Path\"; " +
+                          "Remove-Item -Path $Path\\* -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "Write-Host \"Cleared: $Path\"; " +
+                          "} else { " +
+                          "Write-Host \"No items found in $Path\"; " +
+                          "} " +
+                          "} else { " +
+                          "Write-Host \"Path does not exist: $Path\"; " +
+                          "} " +
+                          "}; " +
+                          "Write-Host 'Starting thumbnail cache cleanup...'; " +
+                          "Clear-Folder '$env:LOCALAPPDATA\\Microsoft\\Windows\\Explorer'; " +
+                          "Write-Host 'Thumbnail cache cleanup completed.' }\"";
             
             case 3: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Clearing Event Logs...'; " +
+                          "Write-Host 'Starting Event Logs cleanup...'; " +
                           "$logs = wevtutil el | Where-Object { $_ -notmatch 'Security|Setup|System' }; " +
+                          "$totalLogs = ($logs | Measure-Object).Count; " +
+                          "Write-Host \"Found $totalLogs event logs (excluding Security, Setup, System)\"; " +
                           "$cleared = 0; $skipped = 0; " +
                           "foreach ($log in $logs) { " +
                           "try { " +
                           "wevtutil cl $log 2>$null; " +
                           "$cleared++; " +
-                          "if ($cleared % 10 -eq 0) { Write-Host 'Cleared $cleared logs...' } " +
+                          "if ($cleared % 20 -eq 0) { Write-Host \"Cleared $cleared logs...\"; } " +
                           "} catch { " +
                           "$skipped++; " +
-                          "if ($skipped -le 5) { Write-Host 'Skipped: $log (Access denied)' } " +
+                          "if ($skipped -le 5) { Write-Host \"Skipped: $log (Access denied)\"; } " +
                           "} }; " +
-                          "Write-Host 'Event logs clearing completed. Cleared: $cleared, Skipped: $skipped' }\"";
+                          "Write-Host \"Event logs cleanup completed. Cleared: $cleared, Skipped: $skipped\" }\"";
             
             case 4: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Reducing WinSxS (Component Store)...'; Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase; Write-Host 'WinSxS cleanup completed.' }\"";
+                          "Write-Host 'Starting WinSxS Component Store cleanup...'; " +
+                          "Write-Host 'This operation may take several minutes...'; " +
+                          "Write-Host 'Running DISM cleanup command...'; " +
+                          "Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase; " +
+                          "Write-Host 'WinSxS Component Store cleanup completed.' }\"";
             
             case 5: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Disabling hibernation and removing hiberfil.sys...'; powercfg /hibernate off; Write-Host 'Hibernation disabled and hiberfil.sys removed.'; Write-Host 'Note: You can re-enable hibernation later with powercfg /hibernate on' }\"";
+                          "Write-Host 'Checking hibernation status...'; " +
+                          "$hibernationEnabled = (powercfg /query SCHEME_CURRENT SUB_SLEEP HIBERNATEIDLE | Select-String '0x00000000').Length -eq 0; " +
+                          "if ($hibernationEnabled) { " +
+                          "Write-Host 'Hibernation is currently enabled'; " +
+                          "Write-Host 'Disabling hibernation and removing hiberfil.sys...'; " +
+                          "powercfg /hibernate off; " +
+                          "Write-Host 'Hibernation disabled and hiberfil.sys removed successfully.'; " +
+                          "} else { " +
+                          "Write-Host 'Hibernation is already disabled'; " +
+                          "}; " +
+                          "Write-Host 'Note: You can re-enable hibernation later with: powercfg /hibernate on' }\"";
             
             case 6: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Cleaning Recycle Bin...'; $(New-Object -ComObject Shell.Application).NameSpace(0xA).Items() | ForEach-Object { Remove-Item $_.Path -Recurse -Force -ErrorAction SilentlyContinue }; Write-Host 'Recycle Bin cleaned.' }\"";
+                          "Write-Host 'Starting Recycle Bin cleanup...'; " +
+                          "$shell = New-Object -ComObject Shell.Application; " +
+                          "$recycleBin = $shell.NameSpace(0xA); " +
+                          "$items = $recycleBin.Items(); " +
+                          "$itemCount = $items.Count; " +
+                          "if ($itemCount -gt 0) { " +
+                          "Write-Host \"Found $itemCount items in Recycle Bin\"; " +
+                          "foreach ($item in $items) { " +
+                          "Remove-Item $item.Path -Recurse -Force -ErrorAction SilentlyContinue; " +
+                          "}; " +
+                          "Write-Host 'Recycle Bin emptied successfully.'; " +
+                          "} else { " +
+                          "Write-Host 'Recycle Bin is already empty'; " +
+                          "}; " +
+                          "Write-Host 'Recycle Bin cleanup completed.' }\"";
             
             default: return "";
         }
@@ -472,7 +635,7 @@ public class SafeCleanGUI extends JFrame {
                     progressBar.setString("Running all operations...");
                     
                     publish("Starting comprehensive system cleanup...\n");
-                    publish("=".repeat(50) + "\n");
+                    publish("==================================================\n");
 
                     for (int i = 0; i < buttonLabels.length; i++) {
                         publish("Step " + (i + 1) + "/" + buttonLabels.length + ": " + buttonLabels[i] + "\n");
@@ -485,7 +648,7 @@ public class SafeCleanGUI extends JFrame {
                         }
                     }
 
-                    publish("=".repeat(50) + "\n");
+                    publish("==================================================\n");
                     publish("All cleanup operations completed!\n");
                     return null;
                 }
@@ -521,6 +684,117 @@ public class SafeCleanGUI extends JFrame {
             button.setEnabled(enabled);
         }
         runAllButton.setEnabled(enabled);
+    }
+
+    private void saveLogToFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Log File");
+        fileChooser.setSelectedFile(new java.io.File("SafeClean_Log_" + 
+                                    new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date()) + ".txt"));
+        
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            try (java.io.FileWriter writer = new java.io.FileWriter(fileChooser.getSelectedFile())) {
+                writer.write(outputArea.getText());
+                JOptionPane.showMessageDialog(this, 
+                    "Log saved successfully to:\n" + fileChooser.getSelectedFile().getAbsolutePath(),
+                    "Log Saved", 
+                    JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Error saving log file:\n" + e.getMessage(),
+                    "Save Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void showAboutDialog() {
+        String aboutMessage = 
+            "SafeClean WinX v2.0.0\n" +
+            "Professional Windows System Cleanup Tool\n\n" +
+            "Created by: 6a6ak\n" +
+            "Repository: github.com/6a6ak/SafeClean_WinX_PS1\n" +
+            "License: MIT License\n\n" +
+            "Java GUI Version Features:\n" +
+            "• Professional UI with custom graphics\n" +
+            "• Real-time PowerShell execution\n" +
+            "• Comprehensive system cleanup operations\n" +
+            "• Windows 10/11 compatible\n" +
+            "• Administrator privilege handling\n\n" +
+            "Copyright (c) 2025 6a6ak\n" +
+            "This software is provided \"as is\" without warranty.";
+            
+        JOptionPane.showMessageDialog(this, 
+            aboutMessage,
+            "About SafeClean WinX", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void openGitHubRepo() {
+        try {
+            String url = "https://github.com/6a6ak/SafeClean_WinX_PS1";
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            } else {
+                // Fallback for systems without Desktop support
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Could not open browser. Please visit:\n" +
+                "https://github.com/6a6ak/SafeClean_WinX_PS1\n\n" +
+                "Error: " + e.getMessage(),
+                "Browser Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showUserGuide() {
+        String userGuideMessage = 
+            "SafeClean WinX User Guide\n\n" +
+            "CLEANUP OPERATIONS:\n\n" +
+            "1. Clean Temporary Files\n" +
+            "   • Removes user and system temp files\n" +
+            "   • Safe operation, run anytime\n\n" +
+            "2. Clean Windows Update Cache\n" +
+            "   • Clears Windows Update downloads\n" +
+            "   • Frees space from old update files\n\n" +
+            "3. Clean Thumbnail Cache\n" +
+            "   • Removes Explorer thumbnail cache\n" +
+            "   • Improves folder browsing performance\n\n" +
+            "4. Clear Event Logs\n" +
+            "   • Clears Windows Event Logs (filtered for safety)\n" +
+            "   • Protects Security, Setup, and System logs\n\n" +
+            "5. Reduce WinSxS Folder (Advanced)\n" +
+            "   • ADVANCED: Cleans Windows Component Store\n" +
+            "   • Use only if you understand implications\n\n" +
+            "6. Disable Hibernation & Remove hiberfil.sys\n" +
+            "   • Disables hibernation feature\n" +
+            "   • Removes hiberfil.sys file (saves GB of space)\n" +
+            "   • Can be re-enabled later if needed\n\n" +
+            "7. Clean Recycle Bin\n" +
+            "   • Permanently empties Recycle Bin\n" +
+            "   • WARNING: Data cannot be recovered\n\n" +
+            "IMPORTANT NOTES:\n" +
+            "• Always run as Administrator\n" +
+            "• Backup important data before cleanup\n" +
+            "• Advanced operations may affect system functionality\n" +
+            "• Some operations permanently delete data";
+            
+        JTextArea textArea = new JTextArea(userGuideMessage);
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        textArea.setBackground(new Color(248, 249, 250));
+        textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(500, 400));
+        
+        JOptionPane.showMessageDialog(this, 
+            scrollPane,
+            "SafeClean WinX User Guide", 
+            JOptionPane.INFORMATION_MESSAGE);
     }
 
     public static void main(String[] args) {

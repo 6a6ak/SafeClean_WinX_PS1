@@ -82,7 +82,13 @@ Simply enter the number corresponding to the cleanup operation you want to perfo
 - Runs `StartComponentCleanup` with `ResetBase` option
 - **Warning**: This is an advanced operation
 
-### 6. Clean Recycle Bin
+### 6. Disable Hibernation & Remove hiberfil.sys
+- Disables Windows hibernation feature
+- Removes the hibernation file (hiberfil.sys) which can be several GB in size
+- Frees up space equal to your system's RAM size
+- **Note**: Can be re-enabled later with `powercfg /hibernate on`
+
+### 7. Clean Recycle Bin
 - Completely empties the Recycle Bin
 - Removes all items permanently
 
@@ -100,6 +106,8 @@ Simply enter the number corresponding to the cleanup operation you want to perfo
 ⚠️ **Data Loss Warning**: Some operations (especially Recycle Bin and Event Logs) will permanently delete data. Use with caution.
 
 ⚠️ **WinSxS Cleanup**: Option 5 is an advanced operation that modifies the Windows Component Store. Only use if you understand the implications.
+
+⚠️ **Hibernation Disable**: Option 6 will disable hibernation permanently and remove hiberfil.sys. This affects fast startup and hibernate features. Can be re-enabled later if needed.
 
 ## Compatibility
 

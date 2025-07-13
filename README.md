@@ -21,7 +21,7 @@ A PowerShell script for safely cleaning up Windows system files and freeing disk
 
 1. Clone this repository or download the script:
    ```bash
-   git clone https://github.com/yourusername/SafeClean_WinX_PS1.git
+   git clone https://github.com/6a6ak/SafeClean_WinX_PS1.git
    ```
 
 2. Navigate to the script directory:
@@ -114,9 +114,11 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+**Testing Notice**: While this script has been tested by the author, it is provided as-is and use is entirely at your own risk.
+
 ## Disclaimer
 
-This software is provided "as is" without warranty of any kind. Use at your own risk. Always backup important data before running cleanup operations.
+This software is provided "as is" without warranty of any kind. Use at your own risk. Always backup important data before running cleanup operations. While the author has tested this script, each system configuration is unique and results may vary.
 
 ## Author
 

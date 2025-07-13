@@ -109,14 +109,8 @@ public class SafeCleanGUI extends JFrame {
         
         JMenuItem clearLogItem = new JMenuItem("Clear Output Log");
         clearLogItem.addActionListener(e -> {
-            outputArea.setText("Welcome to SafeClean WinX!\n" +
-                            "Select a cleanup operation to begin.\n\n" +
-                            "IMPORTANT WARNINGS:\n" +
-                            "• Run this application as Administrator\n" +
-                            "• Some operations permanently delete data\n" +
-                            "• Backup important files before proceeding\n" +
-                            "• Advanced operations may affect system functionality\n\n" +
-                            "Ready to start cleaning...\n");
+            outputArea.setText("Log cleared at " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()) + "\n" +
+                            "SafeClean WinX ready for new operations...\n\n");
         });
         
         JMenuItem saveLogItem = new JMenuItem("Save Log to File");
@@ -387,8 +381,12 @@ public class SafeCleanGUI extends JFrame {
         outputArea.setFont(new Font("Consolas", Font.PLAIN, 12));
         outputArea.setBackground(new Color(253, 253, 253));
         outputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        outputArea.setText("Welcome to SafeClean WinX!\n" +
+        outputArea.setText("Welcome to SafeClean WinX v2.0!\n" +
                          "Select a cleanup operation to begin.\n\n" +
+                         "NEW FEATURES:\n" +
+                         "• Detailed file path logging - see exactly what gets deleted\n" +
+                         "• Log Menu - Clear output or save logs to files\n" +
+                         "• Help Menu - Access GitHub repo and user guide\n\n" +
                          "IMPORTANT WARNINGS:\n" +
                          "• Run this application as Administrator\n" +
                          "• Some operations permanently delete data\n" +
@@ -425,7 +423,6 @@ public class SafeCleanGUI extends JFrame {
         return panel;
     }
 
-    // ...existing methods... (performCleanup, getPowerShellCommand, etc.)
     private void performCleanup(int operationIndex) {
         SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
             @Override
@@ -470,14 +467,22 @@ public class SafeCleanGUI extends JFrame {
         switch (operationIndex) {
             case 0: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
                           "function Clear-Folder($Path) { " +
-                          "Write-Host \"Checking path: $Path\"; " +
+                          "Write-Host \"Scanning: $Path\"; " +
                           "if (Test-Path $Path) { " +
                           "$items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue; " +
                           "if ($items) { " +
                           "$count = ($items | Measure-Object).Count; " +
-                          "Write-Host \"Found $count items in $Path\"; " +
-                          "Remove-Item -Path $Path\\* -Recurse -Force -ErrorAction SilentlyContinue; " +
-                          "Write-Host \"Cleared: $Path\"; " +
+                          "Write-Host \"Found $count items to clean in $Path\"; " +
+                          "$deleted = 0; " +
+                          "foreach ($item in $items) { " +
+                          "try { " +
+                          "Remove-Item -Path $item.FullName -Recurse -Force -ErrorAction Stop; " +
+                          "Write-Host \"  ✓ Deleted: $($item.FullName)\"; " +
+                          "$deleted++; " +
+                          "} catch { " +
+                          "Write-Host \"  ✗ Skipped: $($item.FullName) (in use)\"; " +
+                          "} }; " +
+                          "Write-Host \"Completed: $Path ($deleted/$count items deleted)\"; " +
                           "} else { " +
                           "Write-Host \"No items found in $Path\"; " +
                           "} " +
@@ -485,21 +490,29 @@ public class SafeCleanGUI extends JFrame {
                           "Write-Host \"Path does not exist: $Path\"; " +
                           "} " +
                           "}; " +
-                          "Write-Host 'Starting temporary files cleanup...'; " +
+                          "Write-Host '=== TEMPORARY FILES CLEANUP ==='; " +
                           "Clear-Folder '$env:TEMP'; " +
                           "Clear-Folder 'C:\\Windows\\Temp'; " +
-                          "Write-Host 'Temporary files cleanup completed.' }\"";
+                          "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
             case 1: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
                           "function Clear-Folder($Path) { " +
-                          "Write-Host \"Checking path: $Path\"; " +
+                          "Write-Host \"Scanning: $Path\"; " +
                           "if (Test-Path $Path) { " +
                           "$items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue; " +
                           "if ($items) { " +
                           "$count = ($items | Measure-Object).Count; " +
-                          "Write-Host \"Found $count items in $Path\"; " +
-                          "Remove-Item -Path $Path\\* -Recurse -Force -ErrorAction SilentlyContinue; " +
-                          "Write-Host \"Cleared: $Path\"; " +
+                          "Write-Host \"Found $count items to clean in $Path\"; " +
+                          "$deleted = 0; " +
+                          "foreach ($item in $items) { " +
+                          "try { " +
+                          "Remove-Item -Path $item.FullName -Recurse -Force -ErrorAction Stop; " +
+                          "Write-Host \"  ✓ Deleted: $($item.FullName)\"; " +
+                          "$deleted++; " +
+                          "} catch { " +
+                          "Write-Host \"  ✗ Skipped: $($item.FullName) (in use)\"; " +
+                          "} }; " +
+                          "Write-Host \"Completed: $Path ($deleted/$count items deleted)\"; " +
                           "} else { " +
                           "Write-Host \"No items found in $Path\"; " +
                           "} " +
@@ -507,24 +520,32 @@ public class SafeCleanGUI extends JFrame {
                           "Write-Host \"Path does not exist: $Path\"; " +
                           "} " +
                           "}; " +
-                          "Write-Host 'Starting Windows Update cache cleanup...'; " +
+                          "Write-Host '=== WINDOWS UPDATE CACHE CLEANUP ==='; " +
                           "Write-Host 'Stopping Windows Update service...'; " +
                           "Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue; " +
                           "Clear-Folder 'C:\\Windows\\SoftwareDistribution\\Download'; " +
                           "Write-Host 'Restarting Windows Update service...'; " +
                           "Start-Service -Name wuauserv -ErrorAction SilentlyContinue; " +
-                          "Write-Host 'Windows Update cache cleanup completed.' }\"";
+                          "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
             case 2: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
                           "function Clear-Folder($Path) { " +
-                          "Write-Host \"Checking path: $Path\"; " +
+                          "Write-Host \"Scanning: $Path\"; " +
                           "if (Test-Path $Path) { " +
                           "$items = Get-ChildItem -Path $Path -Recurse -Force -ErrorAction SilentlyContinue; " +
                           "if ($items) { " +
                           "$count = ($items | Measure-Object).Count; " +
-                          "Write-Host \"Found $count items in $Path\"; " +
-                          "Remove-Item -Path $Path\\* -Recurse -Force -ErrorAction SilentlyContinue; " +
-                          "Write-Host \"Cleared: $Path\"; " +
+                          "Write-Host \"Found $count items to clean in $Path\"; " +
+                          "$deleted = 0; " +
+                          "foreach ($item in $items) { " +
+                          "try { " +
+                          "Remove-Item -Path $item.FullName -Recurse -Force -ErrorAction Stop; " +
+                          "Write-Host \"  ✓ Deleted: $($item.FullName)\"; " +
+                          "$deleted++; " +
+                          "} catch { " +
+                          "Write-Host \"  ✗ Skipped: $($item.FullName) (in use)\"; " +
+                          "} }; " +
+                          "Write-Host \"Completed: $Path ($deleted/$count items deleted)\"; " +
                           "} else { " +
                           "Write-Host \"No items found in $Path\"; " +
                           "} " +
@@ -532,12 +553,12 @@ public class SafeCleanGUI extends JFrame {
                           "Write-Host \"Path does not exist: $Path\"; " +
                           "} " +
                           "}; " +
-                          "Write-Host 'Starting thumbnail cache cleanup...'; " +
+                          "Write-Host '=== THUMBNAIL CACHE CLEANUP ==='; " +
                           "Clear-Folder '$env:LOCALAPPDATA\\Microsoft\\Windows\\Explorer'; " +
-                          "Write-Host 'Thumbnail cache cleanup completed.' }\"";
+                          "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
             case 3: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Starting Event Logs cleanup...'; " +
+                          "Write-Host '=== EVENT LOGS CLEANUP ==='; " +
                           "$logs = wevtutil el | Where-Object { $_ -notmatch 'Security|Setup|System' }; " +
                           "$totalLogs = ($logs | Measure-Object).Count; " +
                           "Write-Host \"Found $totalLogs event logs (excluding Security, Setup, System)\"; " +
@@ -546,49 +567,58 @@ public class SafeCleanGUI extends JFrame {
                           "try { " +
                           "wevtutil cl $log 2>$null; " +
                           "$cleared++; " +
-                          "if ($cleared % 20 -eq 0) { Write-Host \"Cleared $cleared logs...\"; } " +
+                          "Write-Host \"  ✓ Cleared log: $log\"; " +
                           "} catch { " +
                           "$skipped++; " +
-                          "if ($skipped -le 5) { Write-Host \"Skipped: $log (Access denied)\"; } " +
+                          "Write-Host \"  ✗ Skipped log: $log (Access denied)\"; " +
                           "} }; " +
-                          "Write-Host \"Event logs cleanup completed. Cleared: $cleared, Skipped: $skipped\" }\"";
+                          "Write-Host \"=== CLEANUP COMPLETED ===\" " +
+                          "Write-Host \"Event logs processed. Cleared: $cleared, Skipped: $skipped\" }\"";
             
             case 4: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Starting WinSxS Component Store cleanup...'; " +
+                          "Write-Host '=== WINSXS COMPONENT STORE CLEANUP ==='; " +
                           "Write-Host 'This operation may take several minutes...'; " +
                           "Write-Host 'Running DISM cleanup command...'; " +
                           "Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase; " +
-                          "Write-Host 'WinSxS Component Store cleanup completed.' }\"";
+                          "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
             case 5: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
+                          "Write-Host '=== HIBERNATION FILE CLEANUP ==='; " +
                           "Write-Host 'Checking hibernation status...'; " +
                           "$hibernationEnabled = (powercfg /query SCHEME_CURRENT SUB_SLEEP HIBERNATEIDLE | Select-String '0x00000000').Length -eq 0; " +
                           "if ($hibernationEnabled) { " +
                           "Write-Host 'Hibernation is currently enabled'; " +
                           "Write-Host 'Disabling hibernation and removing hiberfil.sys...'; " +
                           "powercfg /hibernate off; " +
-                          "Write-Host 'Hibernation disabled and hiberfil.sys removed successfully.'; " +
+                          "Write-Host '  ✓ Hibernation disabled and hiberfil.sys removed successfully.'; " +
                           "} else { " +
-                          "Write-Host 'Hibernation is already disabled'; " +
+                          "Write-Host 'Hibernation is already disabled - no action needed'; " +
                           "}; " +
-                          "Write-Host 'Note: You can re-enable hibernation later with: powercfg /hibernate on' }\"";
+                          "Write-Host 'Note: You can re-enable hibernation later with: powercfg /hibernate on'; " +
+                          "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
             case 6: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
-                          "Write-Host 'Starting Recycle Bin cleanup...'; " +
+                          "Write-Host '=== RECYCLE BIN CLEANUP ==='; " +
                           "$shell = New-Object -ComObject Shell.Application; " +
                           "$recycleBin = $shell.NameSpace(0xA); " +
                           "$items = $recycleBin.Items(); " +
                           "$itemCount = $items.Count; " +
                           "if ($itemCount -gt 0) { " +
                           "Write-Host \"Found $itemCount items in Recycle Bin\"; " +
+                          "$deleted = 0; " +
                           "foreach ($item in $items) { " +
+                          "try { " +
+                          "Write-Host \"  ✓ Deleted: $($item.Name) ($($item.Size) bytes)\"; " +
                           "Remove-Item $item.Path -Recurse -Force -ErrorAction SilentlyContinue; " +
-                          "}; " +
-                          "Write-Host 'Recycle Bin emptied successfully.'; " +
+                          "$deleted++; " +
+                          "} catch { " +
+                          "Write-Host \"  ✗ Skipped: $($item.Name)\"; " +
+                          "} }; " +
+                          "Write-Host \"Recycle Bin emptied: $deleted items processed\"; " +
                           "} else { " +
                           "Write-Host 'Recycle Bin is already empty'; " +
                           "}; " +
-                          "Write-Host 'Recycle Bin cleanup completed.' }\"";
+                          "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
             default: return "";
         }

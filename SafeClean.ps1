@@ -58,6 +58,18 @@ function Clean-WinSxS {
     Write-Host "WinSxS cleanup completed." -ForegroundColor Green
 }
 
+function Disable-Hibernation {
+    Write-Host "Disabling hibernation and removing hiberfil.sys..."
+    $hibernationStatus = powercfg /query SCHEME_CURRENT SUB_SLEEP HIBERNATEIDLE
+    if ($hibernationStatus -match "0x00000000") {
+        Write-Host "Hibernation is already disabled." -ForegroundColor Yellow
+    } else {
+        powercfg /hibernate off
+        Write-Host "Hibernation disabled and hiberfil.sys removed." -ForegroundColor Green
+        Write-Host "Note: You can re-enable hibernation later with 'powercfg /hibernate on'" -ForegroundColor Cyan
+    }
+}
+
 # Main menu loop
 do {
     Write-Host ""
@@ -67,10 +79,11 @@ do {
     Write-Host "3) Clean Thumbnail Cache"
     Write-Host "4) Clear Event Logs"
     Write-Host "5) Reduce WinSxS Folder (Advanced)"
-    Write-Host "6) Clean Recycle Bin"
+    Write-Host "6) Disable Hibernation & Remove hiberfil.sys"
+    Write-Host "7) Clean Recycle Bin"
     Write-Host "0) Exit"
     Write-Host ""
-    $choice = Read-Host "Select an option (0-6)"
+    $choice = Read-Host "Select an option (0-7)"
 
     switch ($choice) {
         "1" { Clear-TempFiles }
@@ -78,7 +91,8 @@ do {
         "3" { Clear-ThumbnailCache }
         "4" { Clear-EventLogs }
         "5" { Clean-WinSxS }
-        "6" { Clear-RecycleBin }
+        "6" { Disable-Hibernation }
+        "7" { Clear-RecycleBin }
         "0" { Write-Host "Exiting..." -ForegroundColor Green }
         default { Write-Host "Invalid choice, try again." -ForegroundColor Yellow }
     }

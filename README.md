@@ -9,6 +9,7 @@ A PowerShell script for safely cleaning up Windows system files and freeing disk
 - 🖼️ **Clean Thumbnail Cache** - Removes Windows Explorer thumbnail cache
 - 📋 **Clear Event Logs** - Clears Windows Event Logs to free space
 - 🗂️ **Reduce WinSxS Folder** - Advanced cleanup of Windows Component Store
+- 💤 **Disable Hibernation** - Disables hibernation and removes hiberfil.sys
 - ♻️ **Clean Recycle Bin** - Empties the Recycle Bin completely
 
 ## Prerequisites
@@ -51,7 +52,8 @@ The script presents an interactive menu with the following options:
 3) Clean Thumbnail Cache
 4) Clear Event Logs
 5) Reduce WinSxS Folder (Advanced)
-6) Clean Recycle Bin
+6) Disable Hibernation & Remove hiberfil.sys
+7) Clean Recycle Bin
 0) Exit
 ```
 

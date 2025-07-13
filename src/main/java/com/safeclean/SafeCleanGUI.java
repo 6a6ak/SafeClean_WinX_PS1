@@ -30,7 +30,7 @@ public class SafeCleanGUI extends JFrame {
     }
 
     private void initializeUI() {
-        setTitle("SafeClean WinX - System Cleanup Tool");
+        setTitle("SafeClean - System Cleanup Tool");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         setSize(900, 700);
@@ -110,7 +110,7 @@ public class SafeCleanGUI extends JFrame {
         JMenuItem clearLogItem = new JMenuItem("Clear Output Log");
         clearLogItem.addActionListener(e -> {
             outputArea.setText("Log cleared at " + new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date()) + "\n" +
-                            "SafeClean WinX ready for new operations...\n\n");
+                            "SafeClean ready for new operations...\n\n");
         });
         
         JMenuItem saveLogItem = new JMenuItem("Save Log to File");
@@ -123,7 +123,7 @@ public class SafeCleanGUI extends JFrame {
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         
-        JMenuItem aboutItem = new JMenuItem("About SafeClean WinX");
+        JMenuItem aboutItem = new JMenuItem("About SafeClean");
         aboutItem.addActionListener(e -> showAboutDialog());
         
         JMenuItem githubItem = new JMenuItem("View on GitHub");
@@ -165,7 +165,7 @@ public class SafeCleanGUI extends JFrame {
         JLabel iconLabel = new JLabel();
         iconLabel.setIcon(new ImageIcon(createCustomIcon()));
         
-        JLabel titleLabel = new JLabel("SafeClean WinX");
+        JLabel titleLabel = new JLabel("SafeClean");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         titleLabel.setForeground(Color.WHITE);
 
@@ -381,7 +381,7 @@ public class SafeCleanGUI extends JFrame {
         outputArea.setFont(new Font("Consolas", Font.PLAIN, 12));
         outputArea.setBackground(new Color(253, 253, 253));
         outputArea.setBorder(new EmptyBorder(10, 10, 10, 10));
-        outputArea.setText("Welcome to SafeClean WinX v2.0!\n" +
+        outputArea.setText("Welcome to SafeClean v2.0!\n" +
                          "Select a cleanup operation to begin.\n\n" +
                          "NEW FEATURES:\n" +
                          "• Detailed file path logging - see exactly what gets deleted\n" +
@@ -413,7 +413,7 @@ public class SafeCleanGUI extends JFrame {
         progressBar.setFont(new Font("Segoe UI", Font.BOLD, 11));
         progressBar.setForeground(new Color(40, 167, 69));
         
-        JLabel statusLabel = new JLabel("SafeClean WinX v2.0 | Created by 6a6ak | Professional System Cleanup Tool");
+        JLabel statusLabel = new JLabel("SafeClean v2.0 | Created by 6a6ak | Professional System Cleanup Tool");
         statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         statusLabel.setForeground(new Color(200, 200, 200));
 
@@ -741,7 +741,7 @@ public class SafeCleanGUI extends JFrame {
 
     private void showAboutDialog() {
         String aboutMessage = 
-            "SafeClean WinX v2.0.0\n" +
+            "SafeClean v2.0.0\n" +
             "Professional Windows System Cleanup Tool\n\n" +
             "Created by: 6a6ak\n" +
             "Repository: github.com/6a6ak/SafeClean_WinX_PS1\n" +
@@ -757,7 +757,7 @@ public class SafeCleanGUI extends JFrame {
             
         JOptionPane.showMessageDialog(this, 
             aboutMessage,
-            "About SafeClean WinX", 
+            "About SafeClean", 
             JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -782,7 +782,7 @@ public class SafeCleanGUI extends JFrame {
 
     private void showUserGuide() {
         String userGuideMessage = 
-            "SafeClean WinX User Guide\n\n" +
+            "SafeClean User Guide\n\n" +
             "CLEANUP OPERATIONS:\n\n" +
             "1. Clean Temporary Files\n" +
             "   • Removes user and system temp files\n" +
@@ -823,7 +823,7 @@ public class SafeCleanGUI extends JFrame {
         
         JOptionPane.showMessageDialog(this, 
             scrollPane,
-            "SafeClean WinX User Guide", 
+            "SafeClean User Guide", 
             JOptionPane.INFORMATION_MESSAGE);
     }
 

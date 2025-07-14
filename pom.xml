@@ -85,7 +85,7 @@
                             <headerType>gui</headerType>
                             <jar>${project.build.directory}/SafeClean-${project.version}.jar</jar>
                             <outfile>${project.build.directory}/SafeClean.exe</outfile>
-                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <downloadUrl>https://adoptium.net/temurin/releases/</downloadUrl>
                             <classPath>
                                 <mainClass>com.safeclean.SafeCleanGUI</mainClass>
                             </classPath>
@@ -93,9 +93,18 @@
                                 <bundledJre64Bit>false</bundledJre64Bit>
                                 <bundledJreAsFallback>false</bundledJreAsFallback>
                                 <minVersion>1.8.0</minVersion>
+                                <maxVersion></maxVersion>
                                 <jdkPreference>preferJre</jdkPreference>
                                 <runtimeBits>64/32</runtimeBits>
+                                <initialHeapSize>64</initialHeapSize>
+                                <maxHeapSize>512</maxHeapSize>
                             </jre>
+                            <messages>
+                                <startupErr>SafeClean requires Java Runtime Environment (JRE) version 1.8 or higher to run. Please install Java from: https://adoptium.net/temurin/releases/</startupErr>
+                                <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted.</bundledJreErr>
+                                <jreVersionErr>SafeClean requires Java version 1.8 or higher. Your Java version is too old. Please update Java from: https://adoptium.net/temurin/releases/</jreVersionErr>
+                                <launcherErr>The registry refers to a nonexistent Java Runtime Environment installation or the runtime is corrupted.</launcherErr>
+                            </messages>
                             <versionInfo>
                                 <fileVersion>2.0.0.0</fileVersion>
                                 <txtFileVersion>${project.version}</txtFileVersion>

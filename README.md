@@ -83,30 +83,44 @@ jar cfe target/SafeClean.jar com.safeclean.SafeCleanGUI -C target/classes .
 
 ## 🏃 Running the Application
 
-### Option 1: Native Windows Executable (Recommended)
+### Option 1: Launcher Scripts (Recommended)
+**Best user experience with automatic Java detection:**
+
 ```bash
-# Direct execution - no Java installation required
-target\SafeClean.exe
+# Windows Batch Launcher (automatic Java detection)
+SafeClean-Launcher.bat
+
+# PowerShell Launcher (advanced detection with colored output)
+SafeClean-Launcher.ps1
 ```
+
 **Right-click → "Run as administrator"** for best results.
 
-### Option 2: Professional Installer
+### Option 2: Native Windows Executable
+```bash
+# Direct execution - requires Java 8+ to be installed
+target\SafeClean.exe
+```
+
+**Note**: If you get "Java Runtime Environment version 1.8.0 not found", see [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md).
+
+### Option 3: Professional Installer
 1. **Download/Run**: `SafeClean-Setup.exe`
 2. **Install**: Follow the Modern UI installer wizard
-3. **Launch**: From Start Menu or Desktop shortcut
+3. **Launch**: From Start Menu or Desktop shortcut (uses launcher script)
 4. **Uninstall**: Use "Add/Remove Programs" or uninstaller
 
-### Option 3: JAR File (Cross-platform)
+### Option 4: JAR File (Cross-platform)
 ```bash
 java -jar target/SafeClean-2.0.0.jar
 ```
 
-### Option 4: From Source
+### Option 5: From Source
 ```bash
 java -cp target/classes com.safeclean.SafeCleanGUI
 ```
 
-### Option 5: PowerShell Installer
+### Option 6: PowerShell Installer
 ```powershell
 # Alternative professional installer
 .\Install-SafeClean.ps1
@@ -219,33 +233,38 @@ SafeClean provides multiple professional distribution methods:
 
 ## ⚠️ Important Notes
 
+- **Java Runtime Requirement**: SafeClean requires **Java 8 or higher** to run
+- **Launcher Scripts**: Use `SafeClean-Launcher.bat` or `SafeClean-Launcher.ps1` for automatic Java detection
+- **Java Installation**: If Java is missing, launchers will guide you to download from official sources
 - **Administrator Privileges**: Required for proper functionality and system access
 - **Windows Compatibility**: Designed and tested for Windows 7/8/10/11
 - **Data Deletion Warning**: Some operations permanently delete files - review before execution
 - **System Modifications**: Advanced operations modify Windows components and registry
 - **Antivirus Notice**: Launch4j executables may trigger false positives (consider code signing)
 - **Network Requirements**: None - fully offline operation
-- **Dependencies**: Self-contained - no additional software required for EXE version
+- **Java Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) for detailed help
 
 ## 🚀 Quick Start Guide
 
 ### For End Users (Recommended)
 1. **Download**: `SafeClean-Setup.exe` from releases
 2. **Install**: Run installer with administrator privileges
-3. **Launch**: Use desktop shortcut or Start Menu entry
-4. **Select Operations**: Choose individual tasks or "Run All"
-5. **Monitor**: Watch real-time progress output
+3. **Launch**: Use desktop shortcut or Start Menu entry (automatic Java detection)
+4. **Java Setup**: If prompted, follow the automatic Java installation guide
+5. **Select Operations**: Choose individual tasks or "Run All"
+6. **Monitor**: Watch real-time progress output
 
 ### For Portable Use
-1. **Download**: `SafeClean.exe` from releases
-2. **Run**: Right-click → "Run as administrator"
-3. **Use**: Direct operation without installation
+1. **Download**: `SafeClean.exe` and launcher scripts from releases
+2. **Check Java**: Ensure Java 8+ is installed, or use `SafeClean-Launcher.bat`
+3. **Run**: Right-click → "Run as administrator"
+4. **Use**: Direct operation without installation
 
 ### For Developers
 1. **Clone**: `git clone https://github.com/6a6ak/SafeClean_WinX_PS1.git`
 2. **Build**: `.\Build-Setup.bat` or `mvn package`
 3. **Test**: Run generated executables
-4. **Distribute**: Share installer or portable EXE
+4. **Distribute**: Share installer or portable EXE with launcher scripts
 
 ## 📄 License
 

@@ -60,6 +60,44 @@ Section "SafeClean Application (Required)" SEC01
   IfFileExists "..\..\..\target\SafeClean-2.0.0.jar" 0 +2
   File /oname=SafeClean-2.0.0.jar "..\..\..\target\SafeClean-2.0.0.jar"
   
+  ; Copy launcher scripts
+  IfFileExists "..\..\..\SafeClean-Launcher.bat" 0 +2
+  File /oname=SafeClean-Launcher.bat "..\..\..\SafeClean-Launcher.bat"
+  
+  IfFileExists "..\..\..\SafeClean-Launcher.ps1" 0 +2
+  File /oname=SafeClean-Launcher.ps1 "..\..\..\SafeClean-Launcher.ps1"
+  
+  ; Create README file
+  FileOpen $9 "$INSTDIR\README.txt" w
+  FileWrite $9 "SafeClean v${PRODUCT_VERSION}$\r$\n"
+  FileWrite $9 "==============================$\r$\n"
+  FileWrite $9 "$\r$\n"
+  FileWrite $9 "Professional Windows System Cleanup Tool$\r$\n"
+  FileWrite $9 "$\r$\n"
+  FileWrite $9 "IMPORTANT: This application requires Java 8 or higher.$\r$\n"
+  FileWrite $9 "$\r$\n"
+  FileWrite $9 "Running SafeClean:$\r$\n"
+  FileWrite $9 "- Double-click SafeClean.exe (requires Java to be installed)$\r$\n"
+  FileWrite $9 "- Or use SafeClean-Launcher.bat for automatic Java detection$\r$\n"
+  FileWrite $9 "- Run as Administrator for best results$\r$\n"
+  FileWrite $9 "$\r$\n"
+  FileWrite $9 "If Java is not installed:$\r$\n"
+  FileWrite $9 "- Download from: https://adoptium.net/temurin/releases/?version=8$\r$\n"
+  FileWrite $9 "- Or use the launcher script for automatic detection$\r$\n"
+  FileWrite $9 "$\r$\n"
+  FileWrite $9 "Features:$\r$\n"
+  FileWrite $9 "- Temporary files cleanup$\r$\n"
+  FileWrite $9 "- Windows Update cache cleanup$\r$\n"
+  FileWrite $9 "- Thumbnail cache cleanup$\r$\n"
+  FileWrite $9 "- Event logs cleanup$\r$\n"
+  FileWrite $9 "- WinSxS component store cleanup$\r$\n"
+  FileWrite $9 "- Hibernation file removal$\r$\n"
+  FileWrite $9 "- Recycle bin cleanup$\r$\n"
+  FileWrite $9 "$\r$\n"
+  FileWrite $9 "Created by: ${PRODUCT_PUBLISHER}$\r$\n"
+  FileWrite $9 "Website: ${PRODUCT_WEB_SITE}$\r$\n"
+  FileClose $9
+  
   ; Create uninstaller
   WriteUninstaller "$INSTDIR\uninst.exe"
   
@@ -75,13 +113,15 @@ SectionEnd
 
 ; Desktop Shortcut Section
 Section "Desktop Shortcut" SEC02
-  CreateShortCut "$DESKTOP\SafeClean.lnk" "$INSTDIR\SafeClean.exe" "" "$INSTDIR\SafeClean.exe" 0
+  CreateShortCut "$DESKTOP\SafeClean.lnk" "$INSTDIR\SafeClean-Launcher.bat" "" "$INSTDIR\SafeClean.exe" 0
 SectionEnd
 
 ; Start Menu Shortcuts Section
 Section "Start Menu Shortcuts" SEC03
   CreateDirectory "$SMPROGRAMS\SafeClean"
-  CreateShortCut "$SMPROGRAMS\SafeClean\SafeClean.lnk" "$INSTDIR\SafeClean.exe" "" "$INSTDIR\SafeClean.exe" 0
+  CreateShortCut "$SMPROGRAMS\SafeClean\SafeClean.lnk" "$INSTDIR\SafeClean-Launcher.bat" "" "$INSTDIR\SafeClean.exe" 0
+  CreateShortCut "$SMPROGRAMS\SafeClean\SafeClean (Direct).lnk" "$INSTDIR\SafeClean.exe" "" "$INSTDIR\SafeClean.exe" 0
+  CreateShortCut "$SMPROGRAMS\SafeClean\README.lnk" "$INSTDIR\README.txt"
   CreateShortCut "$SMPROGRAMS\SafeClean\Uninstall.lnk" "$INSTDIR\uninst.exe" "" "$INSTDIR\uninst.exe" 0
 SectionEnd
 
@@ -97,11 +137,16 @@ Section Uninstall
   ; Remove files
   Delete "$INSTDIR\SafeClean.exe"
   Delete "$INSTDIR\SafeClean-2.0.0.jar"
+  Delete "$INSTDIR\SafeClean-Launcher.bat"
+  Delete "$INSTDIR\SafeClean-Launcher.ps1"
+  Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\uninst.exe"
   
   ; Remove shortcuts
   Delete "$DESKTOP\SafeClean.lnk"
   Delete "$SMPROGRAMS\SafeClean\SafeClean.lnk"
+  Delete "$SMPROGRAMS\SafeClean\SafeClean (Direct).lnk"
+  Delete "$SMPROGRAMS\SafeClean\README.lnk"
   Delete "$SMPROGRAMS\SafeClean\Uninstall.lnk"
   RMDir "$SMPROGRAMS\SafeClean"
   

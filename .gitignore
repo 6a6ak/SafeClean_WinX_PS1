@@ -10,6 +10,9 @@
 .mvn/
 mvnw
 mvnw.cmd
+target/
+!target/SafeClean.exe
+!target/SafeClean-Setup.exe
 
 # IDE
 .idea/
@@ -47,3 +50,11 @@ build/
 # Logs
 logs/
 *.log
+
+# NSIS temporary files
+*.nsi~
+
+# Keep important distribution files
+!SafeClean-Launcher.bat
+!SafeClean-Launcher.ps1
+!JAVA-RUNTIME-GUIDE.md

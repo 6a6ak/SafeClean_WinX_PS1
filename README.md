@@ -84,9 +84,15 @@ jar cfe target/SafeClean.jar com.safeclean.SafeCleanGUI -C target/classes .
 ## 🏃 Running the Application
 
 ### Option 1: Launcher Scripts (Recommended)
-**Best user experience with automatic Java detection:**
+**Best user experience with antivirus-safe operation:**
 
 ```bash
+# Antivirus-Safe Batch Launcher (highly recommended)
+SafeClean-Safe.bat
+
+# Python Launcher (requires Python 3.6+)
+SafeClean-Safe.py
+
 # Windows Batch Launcher (automatic Java detection)
 SafeClean-Launcher.bat
 
@@ -101,6 +107,8 @@ SafeClean-Launcher.ps1
 # Direct execution - requires Java 8+ to be installed
 target\SafeClean.exe
 ```
+
+**⚠️ Antivirus Warning**: This file may trigger false positives (`wacapew.C!ML`). See [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md) for solutions.
 
 **Note**: If you get "Java Runtime Environment version 1.8.0 not found", see [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md).
 
@@ -234,15 +242,14 @@ SafeClean provides multiple professional distribution methods:
 ## ⚠️ Important Notes
 
 - **Java Runtime Requirement**: SafeClean requires **Java 8 or higher** to run
-- **Launcher Scripts**: Use `SafeClean-Launcher.bat` or `SafeClean-Launcher.ps1` for automatic Java detection
-- **Java Installation**: If Java is missing, launchers will guide you to download from official sources
+- **Antivirus False Positives**: `SafeClean.exe` may trigger antivirus warnings (`wacapew.C!ML`) - this is a false positive common with Launch4j executables
+- **Antivirus-Safe Alternatives**: Use `SafeClean-Safe.bat`, `SafeClean-Safe.py`, or launcher scripts to avoid false positives
 - **Administrator Privileges**: Required for proper functionality and system access
 - **Windows Compatibility**: Designed and tested for Windows 7/8/10/11
 - **Data Deletion Warning**: Some operations permanently delete files - review before execution
 - **System Modifications**: Advanced operations modify Windows components and registry
-- **Antivirus Notice**: Launch4j executables may trigger false positives (consider code signing)
 - **Network Requirements**: None - fully offline operation
-- **Java Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) for detailed help
+- **Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) and [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md)
 
 ## 🚀 Quick Start Guide
 

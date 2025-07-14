@@ -89,6 +89,10 @@
                             <classPath>
                                 <mainClass>com.safeclean.SafeCleanGUI</mainClass>
                             </classPath>
+                            <singleInstance>
+                                <mutexName>SafeCleanMutex</mutexName>
+                                <windowTitle>SafeClean</windowTitle>
+                            </singleInstance>
                             <jre>
                                 <bundledJre64Bit>false</bundledJre64Bit>
                                 <bundledJreAsFallback>false</bundledJreAsFallback>
@@ -108,11 +112,11 @@
                             <versionInfo>
                                 <fileVersion>2.0.0.0</fileVersion>
                                 <txtFileVersion>${project.version}</txtFileVersion>
-                                <fileDescription>${project.description}</fileDescription>
+                                <fileDescription>SafeClean - Professional Windows System Cleanup Tool</fileDescription>
                                 <copyright>2025 6a6ak</copyright>
                                 <productVersion>2.0.0.0</productVersion>
                                 <txtProductVersion>${project.version}</txtProductVersion>
-                                <productName>${project.name}</productName>
+                                <productName>SafeClean</productName>
                                 <companyName>6a6ak</companyName>
                                 <internalName>safeclean</internalName>
                                 <originalFilename>SafeClean.exe</originalFilename>

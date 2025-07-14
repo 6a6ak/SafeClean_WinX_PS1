@@ -116,10 +116,18 @@ target\SafeClean.exe
 - Run `Java-Diagnostics.bat` to test your Java installation
 
 ### Option 3: Professional Installer
-1. **Download/Run**: `SafeClean-Setup.exe`
-2. **Install**: Follow the Modern UI installer wizard
-3. **Launch**: From Start Menu or Desktop shortcut (uses launcher script)
-4. **Uninstall**: Use "Add/Remove Programs" or uninstaller
+```bash
+# Run the NSIS installer for professional installation
+.\SafeClean-Setup.exe
+```
+
+**⚠️ Installer Antivirus Warning**: The installer may be flagged as suspicious by antivirus software.
+
+**🚀 If installer is blocked by antivirus:**
+1. **Quick Solution**: Use `.\SafeClean-Safe.bat` instead (zero antivirus issues)
+2. **Create Shortcut**: Run `.\Create-Shortcut.bat` for desktop shortcut
+3. **Manual Install**: See [Bypass Installer Guide](BYPASS-INSTALLER-GUIDE.md)
+4. **Fix Antivirus**: See [Installer Antivirus Fix](INSTALLER-ANTIVIRUS-FIX.md)
 
 ### Option 4: JAR File (Cross-platform)
 ```bash
@@ -247,14 +255,15 @@ SafeClean provides multiple professional distribution methods:
 - **Java Runtime Requirement**: SafeClean requires **Java 8 or higher** to run
 - **Java Version Issues**: If you get "Java too old" errors, see [Java Too Old Fix Guide](JAVA-TOO-OLD-FIX.md)
 - **Java Diagnostics**: Run `Java-Diagnostics.bat` to check your Java installation
-- **Antivirus False Positives**: `SafeClean.exe` may trigger antivirus warnings (`wacapew.C!ML`) - this is a false positive common with Launch4j executables
-- **Antivirus-Safe Alternatives**: Use `SafeClean-Safe.bat`, `SafeClean-Safe.py`, or launcher scripts to avoid false positives
+- **Antivirus False Positives**: Both `SafeClean.exe` and `SafeClean-Setup.exe` may trigger antivirus warnings - these are false positives
+- **Installer Antivirus Issues**: If the installer is flagged, see [Installer Antivirus Fix](INSTALLER-ANTIVIRUS-FIX.md) or [Bypass Installer Guide](BYPASS-INSTALLER-GUIDE.md)
+- **Antivirus-Safe Alternatives**: Use `SafeClean-Safe.bat`, `SafeClean-Safe.py`, or run `Create-Shortcut.bat` to avoid false positives
 - **Administrator Privileges**: Required for proper functionality and system access
 - **Windows Compatibility**: Designed and tested for Windows 7/8/10/11
 - **Data Deletion Warning**: Some operations permanently delete files - review before execution
 - **System Modifications**: Advanced operations modify Windows components and registry
 - **Network Requirements**: None - fully offline operation
-- **Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md), [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md), and [Java Too Old Fix](JAVA-TOO-OLD-FIX.md)
+- **Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md), [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md), [Java Too Old Fix](JAVA-TOO-OLD-FIX.md), and [Installer Fix](INSTALLER-ANTIVIRUS-FIX.md)
 
 ## 🚀 Quick Start Guide
 

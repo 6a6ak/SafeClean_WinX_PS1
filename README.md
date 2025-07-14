@@ -110,7 +110,10 @@ target\SafeClean.exe
 
 **⚠️ Antivirus Warning**: This file may trigger false positives (`wacapew.C!ML`). See [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md) for solutions.
 
-**Note**: If you get "Java Runtime Environment version 1.8.0 not found", see [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md).
+**Note**: If you get "Java Runtime Environment version 1.8.0 not found" or "Java too old", see:
+- [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) for basic Java issues
+- [Java Too Old Fix Guide](JAVA-TOO-OLD-FIX.md) for version compatibility
+- Run `Java-Diagnostics.bat` to test your Java installation
 
 ### Option 3: Professional Installer
 1. **Download/Run**: `SafeClean-Setup.exe`
@@ -242,6 +245,8 @@ SafeClean provides multiple professional distribution methods:
 ## ⚠️ Important Notes
 
 - **Java Runtime Requirement**: SafeClean requires **Java 8 or higher** to run
+- **Java Version Issues**: If you get "Java too old" errors, see [Java Too Old Fix Guide](JAVA-TOO-OLD-FIX.md)
+- **Java Diagnostics**: Run `Java-Diagnostics.bat` to check your Java installation
 - **Antivirus False Positives**: `SafeClean.exe` may trigger antivirus warnings (`wacapew.C!ML`) - this is a false positive common with Launch4j executables
 - **Antivirus-Safe Alternatives**: Use `SafeClean-Safe.bat`, `SafeClean-Safe.py`, or launcher scripts to avoid false positives
 - **Administrator Privileges**: Required for proper functionality and system access
@@ -249,7 +254,7 @@ SafeClean provides multiple professional distribution methods:
 - **Data Deletion Warning**: Some operations permanently delete files - review before execution
 - **System Modifications**: Advanced operations modify Windows components and registry
 - **Network Requirements**: None - fully offline operation
-- **Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) and [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md)
+- **Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md), [Antivirus False Positive Guide](ANTIVIRUS-FALSE-POSITIVE.md), and [Java Too Old Fix](JAVA-TOO-OLD-FIX.md)
 
 ## 🚀 Quick Start Guide
 

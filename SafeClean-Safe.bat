@@ -24,7 +24,7 @@ if %errorlevel% neq 0 (
     timeout /t 3 /nobreak >nul
 )
 
-:: Check if Java is available
+::: Check if Java is available
 echo  [1/3] Checking Java Runtime Environment...
 java -version >nul 2>&1
 if %errorlevel% neq 0 (
@@ -41,12 +41,29 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Get Java version for display
+:: Get Java version and check if it's compatible
 for /f "tokens=3" %%g in ('java -version 2^>^&1 ^| findstr /i "version"') do (
     set JAVA_VERSION=%%g
 )
 set JAVA_VERSION=%JAVA_VERSION:"=%
+
+:: Check if version is compatible (basic check for Java 8+)
+echo %JAVA_VERSION% | findstr /r "^1\.[0-7]\." >nul
+if not errorlevel 1 (
+    echo  ERROR: Java version is too old!
+    echo  Found: %JAVA_VERSION%
+    echo  Required: Java 8 or higher
+    echo.
+    echo  Please update Java from:
+    echo  https://adoptium.net/temurin/releases/?version=8
+    echo.
+    echo  Make sure to install the LATEST version.
+    pause
+    exit /b 1
+)
+
 echo  Found Java version: %JAVA_VERSION%
+echo  Java version is compatible!
 
 :: Check if SafeClean JAR exists
 echo  [2/3] Locating SafeClean application...

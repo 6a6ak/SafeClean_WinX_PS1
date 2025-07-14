@@ -1,5 +1,5 @@
 # Java
-target/
+
 *.class
 *.jar
 *.war

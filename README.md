@@ -1,6 +1,6 @@
 # SafeClean - Professional Windows System Cleanup Tool
 
-A modern Java Swing desktop application for comprehensive Windows system cleanup operations. Now with professional installer and enhanced distribution options.
+A modern Java Swing desktop application for comprehensive Windows system cleanup operations.
 
 ## 🚀 Features
 
@@ -11,29 +11,24 @@ A modern Java Swing desktop application for comprehensive Windows system cleanup
 - 📊 **Real-time Output** - Live feedback and progress monitoring
 - ⚠️ **Safety Warnings** - Built-in warnings and confirmations
 - 🔐 **Administrator Detection** - Automatic privilege checking
-- 📦 **Professional Installer** - Windows setup.exe with Modern UI
-- 🚀 **Multiple Distribution Options** - Portable EXE and professional installer
+- ☕ **Pure Java** - Cross-platform compatible JAR application
 
 ## 📁 Project Structure
 
 ```
 SafeClean_WinX_PS1/
-├── pom.xml                           # Maven configuration with Launch4j + NSIS
+├── pom.xml                           # Maven configuration
 ├── src/
 │   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── safeclean/
-│       │           └── SafeCleanGUI.java    # Main application
-│       └── nsis/
-│           ├── setup.nsi             # Full NSIS installer script
-│           └── setup-simple.nsi      # Working NSIS installer script
+│       └── java/
+│           └── com/
+│               └── safeclean/
+│                   └── SafeCleanGUI.java    # Main application
 ├── target/                           # Build output directory
-│   ├── SafeClean-2.0.0.jar         # Shaded JAR with dependencies
-│   ├── SafeClean.exe                # Native Windows executable (62KB)
-│   └── SafeClean-Setup.exe          # Professional installer (143KB)
-├── Build-Setup.bat                   # Automated build script
-├── Install-SafeClean.ps1            # PowerShell installer alternative
+│   └── SafeClean-2.0.0.jar         # Shaded JAR with dependencies
+├── SafeClean-Safe.bat               # Windows batch launcher
+├── SafeClean-Safe.py                # Python launcher
+├── Java-Diagnostics.bat             # Java environment tester
 └── README.md                         # This file
 ```
 
@@ -42,12 +37,13 @@ SafeClean_WinX_PS1/
 ### Prerequisites
 - **Java JDK 8 or higher** - Target compatibility maintained
 - **Maven 3.6 or higher** - For automated builds and packaging
-- **NSIS 3.11** - For professional Windows installer (optional)
-- **Windows OS** - Required for Launch4j EXE creation
 
-### Quick Build (Recommended)
+### Maven Build
 ```bash
-# Build everything with automated script
+# Build JAR with all dependencies
+mvn clean package
+```
+Creates: `target/SafeClean-2.0.0.jar` - Shaded JAR with all dependencies
 .\Build-Setup.bat
 ```
 This creates both `SafeClean.exe` and `SafeClean-Setup.exe` automatically.

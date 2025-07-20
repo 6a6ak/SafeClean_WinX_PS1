@@ -1,5 +1,4 @@
 # Java
-
 *.class
 *.jar
 *.war
@@ -48,11 +47,3 @@ build/
 # Logs
 logs/
 *.log
-
-# Keep important distribution files
-!SafeClean-Launcher.bat
-!SafeClean-Launcher.ps1
-!SafeClean-Safe.bat
-!SafeClean-Safe.py
-!JAVA-RUNTIME-GUIDE.md
-!ANTIVIRUS-FALSE-POSITIVE.md

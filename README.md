@@ -13,7 +13,7 @@ A Java Swing desktop application for Windows system cleanup operations.
 ## 📁 Project Structure
 
 ```
-SafeClean_WinX_PS1/
+SafeClean/
 ├── pom.xml                           # Maven configuration
 ├── src/
 │   └── main/
@@ -65,4 +65,4 @@ MIT License - see LICENSE file for details.
 
 Created by **6a6ak**
 
-**Repository**: https://github.com/6a6ak/SafeClean_WinX_PS1
+**Repository**: https://github.com/6a6ak/SafeClean

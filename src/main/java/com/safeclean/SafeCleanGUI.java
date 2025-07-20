@@ -324,6 +324,15 @@ public class SafeCleanGUI extends JFrame {
                 g2d.setColor(bgColor.darker());
                 g2d.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 8, 8);
                 
+                // Set text color based on button state
+                if ((index == 4 || index == 5) && getModel().isRollover() && !getModel().isPressed()) {
+                    // Red text for advanced operations on hover
+                    setForeground(new Color(220, 53, 69));
+                } else {
+                    // Default white text
+                    setForeground(Color.WHITE);
+                }
+                
                 g2d.dispose();
                 super.paintComponent(g);
             }
@@ -769,7 +778,7 @@ public class SafeCleanGUI extends JFrame {
             "SafeClean v2.0.0\n" +
             "Professional Windows System Cleanup Tool\n\n" +
             "Created by: 6a6ak\n" +
-            "Repository: github.com/6a6ak/SafeClean_WinX_PS1\n" +
+            "Repository: github.com/6a6ak/SafeClean\n" +
             "License: MIT License\n\n" +
             "Java GUI Version Features:\n" +
             "• Professional UI with custom graphics\n" +
@@ -788,7 +797,7 @@ public class SafeCleanGUI extends JFrame {
 
     private void openGitHubRepo() {
         try {
-            String url = "https://github.com/6a6ak/SafeClean_WinX_PS1";
+            String url = "https://github.com/6a6ak/SafeClean";
             if (java.awt.Desktop.isDesktopSupported()) {
                 java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
             } else {
@@ -798,7 +807,7 @@ public class SafeCleanGUI extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
                 "Could not open browser. Please visit:\n" +
-                "https://github.com/6a6ak/SafeClean_WinX_PS1\n\n" +
+                "https://github.com/6a6ak/SafeClean\n\n" +
                 "Error: " + e.getMessage(),
                 "Browser Error", 
                 JOptionPane.ERROR_MESSAGE);

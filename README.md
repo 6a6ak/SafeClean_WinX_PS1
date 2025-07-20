@@ -44,59 +44,47 @@ SafeClean_WinX_PS1/
 mvn clean package
 ```
 Creates: `target/SafeClean-2.0.0.jar` - Shaded JAR with all dependencies
-.\Build-Setup.bat
-```
-This creates both `SafeClean.exe` and `SafeClean-Setup.exe` automatically.
-
-### Maven Build Options
-
-#### 1. Standard Build (JAR + EXE)
+### Alternative Build (Manual)
 ```bash
-mvn clean package
+# Use the simple build script
+.\build.bat
 ```
-Creates:
-- `target/SafeClean-2.0.0.jar` - Shaded JAR with all dependencies
-- `target/SafeClean.exe` - Native Windows executable (62KB)
-
-#### 2. Professional Installer Build
-```bash
-# Build application first
-mvn clean package
-
-# Create NSIS installer
-"C:\Program Files (x86)\NSIS\makensis.exe" src\main\nsis\setup-simple.nsi
-```
-Creates: `target/SafeClean-Setup.exe` - Professional installer (143KB)
-
-### Manual Build (Advanced)
-```bash
-# Compile
-javac -d target/classes -cp . src/main/java/com/safeclean/SafeCleanGUI.java
-
-# Create JAR
-jar cfe target/SafeClean.jar com.safeclean.SafeCleanGUI -C target/classes .
-```
+Creates: `dist/SafeCleanGUI.jar`
 
 ## 🏃 Running the Application
 
 ### Option 1: Launcher Scripts (Recommended)
-**Best user experience with antivirus-safe operation:**
+**Best user experience with Java environment validation:**
 
 ```bash
-# Antivirus-Safe Batch Launcher (highly recommended)
+# Antivirus-Safe Batch Launcher (recommended)
 SafeClean-Safe.bat
 
 # Python Launcher (requires Python 3.6+)
 SafeClean-Safe.py
 
-# Windows Batch Launcher (automatic Java detection)
+# Windows Batch Launcher
 SafeClean-Launcher.bat
 
-# PowerShell Launcher (advanced detection with colored output)
+# PowerShell Launcher
 SafeClean-Launcher.ps1
 ```
 
 **Right-click → "Run as administrator"** for best results.
+
+### Option 2: Direct JAR Execution
+```bash
+# Direct execution - requires Java 8+ to be installed
+java -jar target/SafeClean-2.0.0.jar
+
+# Or with specific JVM options
+java -Xms64m -Xmx512m -jar target/SafeClean-2.0.0.jar
+```
+
+### Option 3: From Source
+```bash
+java -cp target/classes com.safeclean.SafeCleanGUI
+```
 
 ### Option 2: Native Windows Executable
 ```bash

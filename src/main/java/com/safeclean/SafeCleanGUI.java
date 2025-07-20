@@ -187,7 +187,8 @@ public class SafeCleanGUI extends JFrame {
         panel.add(leftPanel, BorderLayout.WEST);
 
         // Add warning section
-        JPanel warningPanel = new JPanel(new BorderLayout());
+        JPanel warningPanel = new JPanel();
+        warningPanel.setLayout(new BoxLayout(warningPanel, BoxLayout.Y_AXIS));
         warningPanel.setOpaque(false);
         
         // Create custom warning icon
@@ -198,7 +199,7 @@ public class SafeCleanGUI extends JFrame {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 
-                int size = 24;
+                int size = 32;
                 // Draw warning triangle
                 g2d.setColor(new Color(255, 193, 7));
                 int[] xPoints = {size/2, size-4, 4};
@@ -207,18 +208,28 @@ public class SafeCleanGUI extends JFrame {
                 
                 // Draw exclamation mark
                 g2d.setColor(Color.WHITE);
-                g2d.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-                g2d.drawLine(size/2, 8, size/2, 16);
-                g2d.fillOval(size/2-1, 18, 2, 2);
+                g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+                g2d.drawLine(size/2, 10, size/2, 20);
+                g2d.fillOval(size/2-2, 24, 4, 4);
             }
         };
-        warningIcon.setPreferredSize(new Dimension(24, 24));
+        warningIcon.setPreferredSize(new Dimension(32, 32));
+        warningIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        JLabel warningText = new JLabel("Admin Required");
-        warningText.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        warningText.setForeground(new Color(255, 193, 7));
-        warningPanel.add(warningIcon, BorderLayout.NORTH);
-        warningPanel.add(warningText, BorderLayout.CENTER);
+        JLabel warningText1 = new JLabel("ADMINISTRATOR");
+        warningText1.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        warningText1.setForeground(new Color(255, 193, 7));
+        warningText1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel warningText2 = new JLabel("REQUIRED");
+        warningText2.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        warningText2.setForeground(new Color(255, 193, 7));
+        warningText2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        warningPanel.add(warningIcon);
+        warningPanel.add(Box.createVerticalStrut(5));
+        warningPanel.add(warningText1);
+        warningPanel.add(warningText2);
 
         panel.add(warningPanel, BorderLayout.EAST);
 
@@ -599,24 +610,38 @@ public class SafeCleanGUI extends JFrame {
             
             case 6: return "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
                           "Write-Host '=== RECYCLE BIN CLEANUP ==='; " +
-                          "$shell = New-Object -ComObject Shell.Application; " +
-                          "$recycleBin = $shell.NameSpace(0xA); " +
-                          "$items = $recycleBin.Items(); " +
-                          "$itemCount = $items.Count; " +
-                          "if ($itemCount -gt 0) { " +
-                          "Write-Host \"Found $itemCount items in Recycle Bin\"; " +
-                          "$deleted = 0; " +
-                          "foreach ($item in $items) { " +
                           "try { " +
-                          "Write-Host \"  ✓ Deleted: $($item.Name) ($($item.Size) bytes)\"; " +
-                          "Remove-Item $item.Path -Recurse -Force -ErrorAction SilentlyContinue; " +
-                          "$deleted++; " +
+                          "Add-Type -AssemblyName Microsoft.VisualBasic; " +
+                          "$recycleBin = [Microsoft.VisualBasic.FileIO.FileSystem]::DirectoryExists('C:\\$Recycle.Bin'); " +
+                          "if ($recycleBin) { " +
+                          "Write-Host 'Emptying Recycle Bin using PowerShell cmdlet...'; " +
+                          "Clear-RecycleBin -Force -ErrorAction Stop; " +
+                          "Write-Host '  ✓ Recycle Bin emptied successfully'; " +
+                          "} else { " +
+                          "Write-Host 'Recycle Bin folder not accessible'; " +
+                          "} " +
                           "} catch { " +
-                          "Write-Host \"  ✗ Skipped: $($item.Name)\"; " +
-                          "} }; " +
-                          "Write-Host \"Recycle Bin emptied: $deleted items processed\"; " +
+                          "Write-Host 'Trying alternative method...'; " +
+                          "try { " +
+                          "$shell = New-Object -ComObject Shell.Application; " +
+                          "$recycleBinFolder = $shell.NameSpace(0xA); " +
+                          "if ($recycleBinFolder) { " +
+                          "$items = $recycleBinFolder.Items(); " +
+                          "if ($items.Count -gt 0) { " +
+                          "Write-Host \"Found $($items.Count) items in Recycle Bin\"; " +
+                          "foreach ($item in $items) { " +
+                          "$recycleBinFolder.MoveHere($item, 4); " +
+                          "Write-Host \"  ✓ Deleted: $($item.Name)\"; " +
+                          "}; " +
+                          "Write-Host 'Recycle Bin emptied using COM method'; " +
                           "} else { " +
                           "Write-Host 'Recycle Bin is already empty'; " +
+                          "} " +
+                          "} " +
+                          "} catch { " +
+                          "Write-Host \"Error: $($_.Exception.Message)\"; " +
+                          "Write-Host 'Recycle Bin cleanup failed - may require manual intervention'; " +
+                          "} " +
                           "}; " +
                           "Write-Host '=== CLEANUP COMPLETED ===' }\"";
             
@@ -846,15 +871,6 @@ public class SafeCleanGUI extends JFrame {
         SwingUtilities.invokeLater(() -> {
             SafeCleanGUI gui = new SafeCleanGUI();
             gui.setVisible(true);
-
-            // Show admin warning
-            JOptionPane.showMessageDialog(gui,
-                "ADMINISTRATOR REQUIRED\n\n" +
-                "This application requires Administrator privileges to function properly.\n" +
-                "Please ensure you are running this as Administrator.\n\n" +
-                "Right-click the executable and select 'Run as Administrator'",
-                "Administrator Required",
-                JOptionPane.WARNING_MESSAGE);
         });
     }
 }

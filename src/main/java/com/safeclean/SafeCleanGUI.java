@@ -119,6 +119,40 @@ public class SafeCleanGUI extends JFrame {
         logMenu.add(clearLogItem);
         logMenu.add(saveLogItem);
 
+        // Tools Menu
+        JMenu toolsMenu = new JMenu("Tools");
+        toolsMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        JMenuItem systemInfoItem = new JMenuItem("System Information");
+        systemInfoItem.addActionListener(e -> showSystemInfo());
+        
+        JMenuItem diskSpaceItem = new JMenuItem("Disk Space Analyzer");
+        diskSpaceItem.addActionListener(e -> showDiskSpaceAnalyzer());
+        
+        JMenuItem registryCleanerItem = new JMenuItem("Registry Cleaner (Basic)");
+        registryCleanerItem.addActionListener(e -> showRegistryCleaner());
+        
+        toolsMenu.add(systemInfoItem);
+        toolsMenu.add(diskSpaceItem);
+        toolsMenu.addSeparator();
+        toolsMenu.add(registryCleanerItem);
+
+        // View Menu
+        JMenu viewMenu = new JMenu("View");
+        viewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        
+        JCheckBoxMenuItem alwaysOnTopItem = new JCheckBoxMenuItem("Always On Top");
+        alwaysOnTopItem.addActionListener(e -> {
+            setAlwaysOnTop(alwaysOnTopItem.isSelected());
+        });
+        
+        JMenuItem fontSizeItem = new JMenuItem("Change Font Size");
+        fontSizeItem.addActionListener(e -> changeFontSize());
+        
+        viewMenu.add(alwaysOnTopItem);
+        viewMenu.addSeparator();
+        viewMenu.add(fontSizeItem);
+
         // Help Menu
         JMenu helpMenu = new JMenu("Help");
         helpMenu.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -132,12 +166,23 @@ public class SafeCleanGUI extends JFrame {
         JMenuItem userGuideItem = new JMenuItem("User Guide");
         userGuideItem.addActionListener(e -> showUserGuide());
         
+        JMenuItem faqItem = new JMenuItem("FAQ");
+        faqItem.addActionListener(e -> showFAQ());
+        
+        JMenuItem reportIssueItem = new JMenuItem("Report Issue");
+        reportIssueItem.addActionListener(e -> reportIssue());
+        
         helpMenu.add(aboutItem);
         helpMenu.addSeparator();
         helpMenu.add(githubItem);
         helpMenu.add(userGuideItem);
+        helpMenu.addSeparator();
+        helpMenu.add(faqItem);
+        helpMenu.add(reportIssueItem);
 
         menuBar.add(logMenu);
+        menuBar.add(toolsMenu);
+        menuBar.add(viewMenu);
         menuBar.add(helpMenu);
         
         return menuBar;
@@ -861,6 +906,288 @@ public class SafeCleanGUI extends JFrame {
             scrollPane,
             "SafeClean User Guide", 
             JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void showSystemInfo() {
+        try {
+            String systemInfo = "System Information\n\n";
+            
+            // Basic system info
+            systemInfo += "OS: " + System.getProperty("os.name") + " " + System.getProperty("os.version") + "\n";
+            systemInfo += "Architecture: " + System.getProperty("os.arch") + "\n";
+            systemInfo += "Java Version: " + System.getProperty("java.version") + "\n";
+            systemInfo += "User: " + System.getProperty("user.name") + "\n\n";
+            
+            // Memory info
+            Runtime runtime = Runtime.getRuntime();
+            long maxMemory = runtime.maxMemory();
+            long totalMemory = runtime.totalMemory();
+            long freeMemory = runtime.freeMemory();
+            long usedMemory = totalMemory - freeMemory;
+            
+            systemInfo += "Memory Information:\n";
+            systemInfo += "Max Memory: " + (maxMemory / 1024 / 1024) + " MB\n";
+            systemInfo += "Total Memory: " + (totalMemory / 1024 / 1024) + " MB\n";
+            systemInfo += "Used Memory: " + (usedMemory / 1024 / 1024) + " MB\n";
+            systemInfo += "Free Memory: " + (freeMemory / 1024 / 1024) + " MB\n\n";
+            
+            // Disk space info
+            java.io.File[] roots = java.io.File.listRoots();
+            systemInfo += "Disk Space Information:\n";
+            for (java.io.File root : roots) {
+                long totalSpace = root.getTotalSpace();
+                long freeSpace = root.getFreeSpace();
+                long usedSpace = totalSpace - freeSpace;
+                
+                if (totalSpace > 0) {
+                    systemInfo += "Drive " + root.getAbsolutePath() + "\n";
+                    systemInfo += "  Total: " + (totalSpace / 1024 / 1024 / 1024) + " GB\n";
+                    systemInfo += "  Used: " + (usedSpace / 1024 / 1024 / 1024) + " GB\n";
+                    systemInfo += "  Free: " + (freeSpace / 1024 / 1024 / 1024) + " GB\n\n";
+                }
+            }
+            
+            JTextArea textArea = new JTextArea(systemInfo);
+            textArea.setEditable(false);
+            textArea.setFont(new Font("Consolas", Font.PLAIN, 12));
+            textArea.setBackground(new Color(248, 249, 250));
+            textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
+            
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(500, 400));
+            
+            JOptionPane.showMessageDialog(this, 
+                scrollPane,
+                "System Information", 
+                JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error retrieving system information:\n" + e.getMessage(),
+                "System Info Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showDiskSpaceAnalyzer() {
+        try {
+            String diskAnalysis = "Disk Space Analysis\n\n";
+            
+            java.io.File[] roots = java.io.File.listRoots();
+            for (java.io.File root : roots) {
+                long totalSpace = root.getTotalSpace();
+                long freeSpace = root.getFreeSpace();
+                long usedSpace = totalSpace - freeSpace;
+                
+                if (totalSpace > 0) {
+                    double usedPercentage = ((double) usedSpace / totalSpace) * 100;
+                    diskAnalysis += "Drive: " + root.getAbsolutePath() + "\n";
+                    diskAnalysis += "Total Space: " + String.format("%.2f GB", totalSpace / 1024.0 / 1024.0 / 1024.0) + "\n";
+                    diskAnalysis += "Used Space: " + String.format("%.2f GB (%.1f%%)", usedSpace / 1024.0 / 1024.0 / 1024.0, usedPercentage) + "\n";
+                    diskAnalysis += "Free Space: " + String.format("%.2f GB", freeSpace / 1024.0 / 1024.0 / 1024.0) + "\n";
+                    
+                    // Visual bar
+                    int barLength = 30;
+                    int usedBars = (int) (usedPercentage / 100 * barLength);
+                    String bar = "[" + "█".repeat(usedBars) + "░".repeat(barLength - usedBars) + "]";
+                    diskAnalysis += bar + "\n\n";
+                }
+            }
+            
+            diskAnalysis += "Common Large Files Locations:\n";
+            diskAnalysis += "• C:\\Windows\\WinSxS\\ (Windows Component Store)\n";
+            diskAnalysis += "• C:\\Windows\\SoftwareDistribution\\ (Windows Updates)\n";
+            diskAnalysis += "• %TEMP% (Temporary Files)\n";
+            diskAnalysis += "• %LOCALAPPDATA%\\Microsoft\\Windows\\Explorer\\ (Thumbnails)\n";
+            diskAnalysis += "• C:\\hiberfil.sys (Hibernation File)\n";
+            diskAnalysis += "• C:\\pagefile.sys (Virtual Memory)\n\n";
+            diskAnalysis += "Use SafeClean's cleanup operations to free space safely!";
+            
+            JTextArea textArea = new JTextArea(diskAnalysis);
+            textArea.setEditable(false);
+            textArea.setFont(new Font("Consolas", Font.PLAIN, 12));
+            textArea.setBackground(new Color(248, 249, 250));
+            textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
+            
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(550, 450));
+            
+            JOptionPane.showMessageDialog(this, 
+                scrollPane,
+                "Disk Space Analyzer", 
+                JOptionPane.INFORMATION_MESSAGE);
+                
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error analyzing disk space:\n" + e.getMessage(),
+                "Disk Analysis Error", 
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void showRegistryCleaner() {
+        String registryInfo = 
+            "Registry Cleaner (Basic)\n\n" +
+            "WARNING: Registry cleaning can be dangerous!\n\n" +
+            "SafeClean includes basic registry maintenance through Windows built-in tools:\n\n" +
+            "SAFE REGISTRY OPERATIONS:\n" +
+            "• System File Checker (SFC Scan)\n" +
+            "• DISM Health Restore\n" +
+            "• Windows Registry Checker\n\n" +
+            "MANUAL REGISTRY CLEANING:\n" +
+            "1. Press Win+R, type 'regedit'\n" +
+            "2. File → Export (Create backup first!)\n" +
+            "3. Clean these safe locations:\n" +
+            "   • HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run\n" +
+            "   • HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\n\n" +
+            "RECOMMENDED TOOLS:\n" +
+            "• CCleaner (Registry section)\n" +
+            "• Windows built-in Disk Cleanup\n" +
+            "• System Configuration (msconfig)\n\n" +
+            "IMPORTANT: Always create a system restore point before registry changes!";
+            
+        int result = JOptionPane.showConfirmDialog(this,
+            registryInfo + "\n\nWould you like to run a safe SFC scan now?",
+            "Registry Cleaner Information",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.INFORMATION_MESSAGE);
+            
+        if (result == JOptionPane.YES_OPTION) {
+            runSFCScan();
+        }
+    }
+
+    private void runSFCScan() {
+        SwingWorker<Void, String> worker = new SwingWorker<Void, String>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                publish("Starting System File Checker (SFC) scan...\n");
+                publish("This may take 10-15 minutes. Please wait...\n\n");
+                progressBar.setIndeterminate(true);
+                progressBar.setString("Running SFC scan...");
+                setButtonsEnabled(false);
+
+                try {
+                    String command = "powershell.exe -ExecutionPolicy Bypass -Command \"& {" +
+                                   "Write-Host '=== SYSTEM FILE CHECKER SCAN ==='; " +
+                                   "Write-Host 'Starting SFC scan (this may take 10-15 minutes)...'; " +
+                                   "sfc /scannow; " +
+                                   "Write-Host '=== SFC SCAN COMPLETED ==='; " +
+                                   "Write-Host 'Check the output above for results.' }\"";
+                    executePowerShellCommand(command);
+                    publish("SFC scan completed!\n\n");
+                } catch (Exception e) {
+                    publish("Error during SFC scan: " + e.getMessage() + "\n\n");
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void process(java.util.List<String> chunks) {
+                for (String chunk : chunks) {
+                    outputArea.append(chunk);
+                    outputArea.setCaretPosition(outputArea.getDocument().getLength());
+                }
+            }
+
+            @Override
+            protected void done() {
+                progressBar.setIndeterminate(false);
+                progressBar.setString("SFC scan completed");
+                setButtonsEnabled(true);
+            }
+        };
+
+        worker.execute();
+    }
+
+    private void changeFontSize() {
+        String[] sizes = {"10", "12", "14", "16", "18", "20"};
+        String currentSize = String.valueOf(outputArea.getFont().getSize());
+        
+        String selectedSize = (String) JOptionPane.showInputDialog(this,
+            "Select font size for output log:",
+            "Change Font Size",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            sizes,
+            currentSize);
+            
+        if (selectedSize != null) {
+            try {
+                int newSize = Integer.parseInt(selectedSize);
+                Font currentFont = outputArea.getFont();
+                Font newFont = new Font(currentFont.getName(), currentFont.getStyle(), newSize);
+                outputArea.setFont(newFont);
+                
+                // Save preference for next time
+                outputArea.append("Font size changed to " + newSize + "pt\n");
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, 
+                    "Invalid font size selected",
+                    "Font Size Error", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void showFAQ() {
+        String faqContent = 
+            "SafeClean - Frequently Asked Questions\n\n" +
+            "Q: Do I need administrator privileges?\n" +
+            "A: Yes, most cleanup operations require admin rights to access system folders.\n\n" +
+            "Q: Is it safe to run all cleanup operations?\n" +
+            "A: Yes, but advanced operations (WinSxS, Hibernation) should be used carefully.\n\n" +
+            "Q: What if the cleanup gets stuck?\n" +
+            "A: Some operations take time. Wait 10-15 minutes before force-closing.\n\n" +
+            "Q: Can I recover deleted files?\n" +
+            "A: No, most cleanup operations permanently delete files. Backup important data first.\n\n" +
+            "Q: Why does Recycle Bin cleanup sometimes fail?\n" +
+            "A: Files may be in use. Try closing all programs and running again.\n\n" +
+            "Q: How much space will I free up?\n" +
+            "A: Varies by system. Typically 1-10GB, sometimes more on heavily used systems.\n\n" +
+            "Q: Can I schedule automatic cleanups?\n" +
+            "A: Not built-in yet, but you can run SafeClean manually as needed.\n\n" +
+            "Q: What's the difference between normal and advanced operations?\n" +
+            "A: Normal operations are safe daily cleaning. Advanced operations affect system components.\n\n" +
+            "Q: Why do I need Java to run this?\n" +
+            "A: SafeClean is built in Java for cross-platform compatibility and modern UI features.\n\n" +
+            "Q: How do I report bugs or request features?\n" +
+            "A: Use the 'Report Issue' menu item or visit our GitHub repository.";
+            
+        JTextArea textArea = new JTextArea(faqContent);
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        textArea.setBackground(new Color(248, 249, 250));
+        textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(550, 450));
+        
+        JOptionPane.showMessageDialog(this, 
+            scrollPane,
+            "SafeClean FAQ", 
+            JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private void reportIssue() {
+        try {
+            String url = "https://github.com/6a6ak/SafeClean/issues/new";
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            } else {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, 
+                "Could not open browser. Please visit:\n" +
+                "https://github.com/6a6ak/SafeClean/issues\n\n" +
+                "Or email: babak@clean.tricks.se\n\n" +
+                "Error: " + e.getMessage(),
+                "Report Issue", 
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {

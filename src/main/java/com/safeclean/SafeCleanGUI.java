@@ -433,7 +433,7 @@ public class SafeCleanGUI extends JFrame {
         progressBar.setFont(new Font("Segoe UI", Font.BOLD, 11));
         progressBar.setForeground(new Color(40, 167, 69));
         
-        JLabel statusLabel = new JLabel("SafeClean v2.0 | Created by 6a6ak | Professional System Cleanup Tool");
+        JLabel statusLabel = new JLabel("SafeClean v2.0 | Created by Babak Ahari | Professional System Cleanup Tool");
         statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
         statusLabel.setForeground(new Color(200, 200, 200));
 
@@ -777,8 +777,9 @@ public class SafeCleanGUI extends JFrame {
         String aboutMessage = 
             "SafeClean v2.0.0\n" +
             "Professional Windows System Cleanup Tool\n\n" +
-            "Created by: 6a6ak\n" +
-            "Repository: github.com/6a6ak/SafeClean\n" +
+            "Created by: Babak Ahari\n" +
+            "Website: Clean.tricks.se\n" +
+            "GitHub: github.com/6a6ak/SafeClean\n" +
             "License: MIT License\n\n" +
             "Java GUI Version Features:\n" +
             "• Professional UI with custom graphics\n" +
@@ -786,7 +787,7 @@ public class SafeCleanGUI extends JFrame {
             "• Comprehensive system cleanup operations\n" +
             "• Windows 10/11 compatible\n" +
             "• Administrator privilege handling\n\n" +
-            "Copyright (c) 2025 6a6ak\n" +
+            "Copyright (c) 2025 Babak Ahari\n" +
             "This software is provided \"as is\" without warranty.";
             
         JOptionPane.showMessageDialog(this, 
@@ -807,7 +808,8 @@ public class SafeCleanGUI extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
                 "Could not open browser. Please visit:\n" +
-                "https://github.com/6a6ak/SafeClean\n\n" +
+                "Website: Clean.tricks.se\n" +
+                "GitHub: https://github.com/6a6ak/SafeClean\n\n" +
                 "Error: " + e.getMessage(),
                 "Browser Error", 
                 JOptionPane.ERROR_MESSAGE);

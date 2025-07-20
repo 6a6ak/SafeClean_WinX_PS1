@@ -63,6 +63,7 @@ MIT License - see LICENSE file for details.
 
 ## 👨‍💻 Author
 
-Created by **6a6ak**
+Created by **Babak Ahari**
 
-**Repository**: https://github.com/6a6ak/SafeClean
+**Website**: Clean.tricks.se  
+**GitHub**: https://github.com/6a6ak/SafeClean

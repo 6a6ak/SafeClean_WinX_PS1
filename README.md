@@ -97,37 +97,17 @@ target\SafeClean.exe
 **Note**: If you get "Java Runtime Environment version 1.8.0 not found" or "Java too old", see:
 - [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) for basic Java issues
 - [Java Too Old Fix Guide](JAVA-TOO-OLD-FIX.md) for version compatibility
-- Run `Java-Diagnostics.bat` to test your Java installation
+## ⚠️ Important Notes
 
-### Option 3: Professional Installer
-```bash
-# Run the NSIS installer for professional installation
-.\SafeClean-Setup.exe
-```
-
-**⚠️ Installer Antivirus Warning**: The installer may be flagged as suspicious by antivirus software.
-
-**🚀 If installer is blocked by antivirus:**
-1. **Quick Solution**: Use `.\SafeClean-Safe.bat` instead (zero antivirus issues)
-2. **Create Shortcut**: Run `.\Create-Shortcut.bat` for desktop shortcut
-3. **Manual Install**: See [Bypass Installer Guide](BYPASS-INSTALLER-GUIDE.md)
-4. **Fix Antivirus**: See [Installer Antivirus Fix](INSTALLER-ANTIVIRUS-FIX.md)
-
-### Option 4: JAR File (Cross-platform)
-```bash
-java -jar target/SafeClean-2.0.0.jar
-```
-
-### Option 5: From Source
-```bash
-java -cp target/classes com.safeclean.SafeCleanGUI
-```
-
-### Option 6: PowerShell Installer
-```powershell
-# Alternative professional installer
-.\Install-SafeClean.ps1
-```
+- **Java Runtime Requirement**: SafeClean requires **Java 8 or higher** to run
+- **Java Version Issues**: If you get "Java too old" errors, see [Java Too Old Fix Guide](JAVA-TOO-OLD-FIX.md)
+- **Java Diagnostics**: Run `Java-Diagnostics.bat` to check your Java installation
+- **Administrator Privileges**: Required for proper functionality and system access
+- **Windows Compatibility**: Designed and tested for Windows 7/8/10/11
+- **Data Deletion Warning**: Some operations permanently delete files - review before execution
+- **System Modifications**: Advanced operations modify Windows components and registry
+- **Network Requirements**: None - fully offline operation
+- **Troubleshooting**: See [Java Runtime Guide](JAVA-RUNTIME-GUIDE.md) and [Java Too Old Fix](JAVA-TOO-OLD-FIX.md)
 
 ## 🎨 Custom Features
 
@@ -145,9 +125,11 @@ java -cp target/classes com.safeclean.SafeCleanGUI
 - **Status Bar**: Progress tracking with informative status messages
 - **Menu System**: File menu with About dialog and enhanced functionality
 
-### Professional Installation Experience
-- **Modern UI Installer**: NSIS-based setup with professional appearance
-- **Component Selection**: Choose desktop shortcuts, Start Menu integration
+### Java Integration Features
+- **Cross-platform Compatibility** - Runs on any Java 8+ system
+- **Memory Optimization** - Efficient resource usage
+- **Clean Architecture** - Maintainable and extensible code
+- **Maven Integration** - Professional build and dependency management
 - **Registry Integration**: Proper Windows "Add/Remove Programs" support
 - **Uninstaller**: Clean removal with registry cleanup
 - **Administrator Handling**: Automatic privilege elevation when needed
@@ -165,6 +147,55 @@ java -cp target/classes com.safeclean.SafeCleanGUI
 ## 🔧 Development
 
 ### Maven Build System
+## 🔧 Technical Details
+
+### Build Configuration
+- **Java Version**: 8+ compatibility (source and target)
+- **Maven Shade Plugin**: Creates fat JAR with all dependencies
+- **Main Class**: `com.safeclean.SafeCleanGUI`
+- **Final JAR**: `SafeClean-2.0.0.jar`
+
+### Java Environment Testing
+Use the included diagnostic tools to verify Java installation:
+
+```bash
+# Comprehensive Java testing
+.\Java-Diagnostics.bat
+
+# Simple Java verification  
+java -version
+```
+
+### Memory Configuration
+Default JVM settings for optimal performance:
+```bash
+java -Xms64m -Xmx512m -Dfile.encoding=UTF-8 -jar SafeClean-2.0.0.jar
+```
+
+### Technology Stack
+- **Language**: Java 8+
+- **GUI Framework**: Swing
+- **Build Tool**: Maven 3.6+
+- **Packaging**: Maven Shade Plugin
+- **Platform**: Windows (Java compatible)
+
+### IDE Setup
+- **Import**: As Maven project
+- **Main Class**: `com.safeclean.SafeCleanGUI`
+- **Java Version**: 8+ (maintains Windows 7/8/10/11 compatibility)
+- **Build Target**: Cross-platform JAR
+
+## � Development Information
+
+### Project Highlights
+- **Professional Grade**: Enterprise-ready architecture
+- **Safety First**: Multiple confirmation layers
+- **User Friendly**: Intuitive interface design  
+- **Reliable**: Comprehensive error handling
+- **Portable**: Single JAR deployment
+- **Maintainable**: Clean, documented code
+
+### Build Process
 ```bash
 # Clean and compile
 mvn clean compile
@@ -174,48 +205,7 @@ mvn test
 
 # Package with all dependencies
 mvn package
-
-# Create Windows executable (Launch4j integration)
-mvn package  # Automatically creates SafeClean.exe
-
-# Build installer (automated)
-.\Build-Setup.bat
 ```
-
-### Technology Stack
-- **Java 8** - Target compatibility for broad Windows support
-- **Swing GUI** - Native cross-platform interface
-- **Maven Shade Plugin** - Dependency bundling
-- **Launch4j** - Java-to-EXE wrapper for native Windows execution
-- **NSIS** - Professional Windows installer creation
-- **PowerShell** - Alternative installer system
-
-### IDE Setup
-- **Import**: As Maven project
-- **Main Class**: `com.safeclean.SafeCleanGUI`
-- **Java Version**: 8+ (maintains Windows 7/8/10/11 compatibility)
-- **Build Target**: Windows x86/x64 systems
-
-## 📦 Distribution Options
-
-SafeClean provides multiple professional distribution methods:
-
-### 1. Portable Executable
-- **File**: `SafeClean.exe` (62KB)
-- **Type**: Standalone native Windows executable
-- **Benefits**: No installation required, runs anywhere
-- **Use Case**: Quick deployment, portable usage
-
-### 2. Professional Installer
-- **File**: `SafeClean-Setup.exe` (143KB)
-- **Type**: NSIS-based Windows installer with Modern UI
-- **Features**:
-  - Installation to `C:\Program Files\SafeClean\`
-  - Desktop shortcut creation (optional)
-  - Start Menu integration with folder
-  - Registry entries for "Add/Remove Programs"
-  - Professional uninstaller with cleanup
-  - Administrator privilege handling
 - **Use Case**: Enterprise deployment, end-user distribution
 
 ### 3. PowerShell Installer

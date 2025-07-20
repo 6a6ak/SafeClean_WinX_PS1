@@ -46,9 +46,8 @@ echo.
 echo To run the application:
 echo   java -jar dist/SafeCleanGUI.jar
 echo.
-echo To create a Windows executable, you can use:
-echo   - Launch4j (recommended)
-echo   - jpackage (Java 14+)
-echo   - GraalVM native-image
+echo Or use the provided launcher scripts:
+echo   SafeClean-Safe.bat (Windows batch launcher)
+echo   SafeClean-Safe.py (Python launcher)
 echo.
 pause

@@ -35,7 +35,9 @@ public class SafeCleanGUI extends JFrame {
         setLayout(new BorderLayout());
         setSize(900, 700);
         setLocationRelativeTo(null);
-        setIconImage(createCustomIcon());
+        
+        // Set application icons (multiple sizes)
+        setApplicationIcons();
 
         // Create menu bar
         setJMenuBar(createMenuBar());
@@ -54,6 +56,29 @@ public class SafeCleanGUI extends JFrame {
     }
 
     private BufferedImage createCustomIcon() {
+        // Try to load external icon first - prefer ICO, then PNG
+        try {
+            // Try ICO first (better for Windows)
+            java.net.URL iconURL = getClass().getResource("/icons/safeclean-icon.ico");
+            if (iconURL != null) {
+                BufferedImage img = javax.imageio.ImageIO.read(iconURL);
+                System.out.println("✓ Loaded main icon from ICO file");
+                return img;
+            }
+            
+            // Fallback to PNG
+            iconURL = getClass().getResource("/icons/safeclean-icon.png");
+            if (iconURL != null) {
+                BufferedImage img = javax.imageio.ImageIO.read(iconURL);
+                System.out.println("✓ Loaded main icon from PNG file");
+                return img;
+            }
+        } catch (Exception e) {
+            System.out.println("Could not load external icon, using generated icon: " + e.getMessage());
+        }
+        
+        // Fallback to programmatically created icon
+        System.out.println("⚠ Using fallback generated icon");
         int size = 64;
         BufferedImage icon = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = icon.createGraphics();
@@ -96,6 +121,98 @@ public class SafeCleanGUI extends JFrame {
         
         g2d.dispose();
         return icon;
+    }
+
+    // Utility method to load icons from resources
+    private ImageIcon loadIcon(String iconPath, int width, int height) {
+        try {
+            java.net.URL iconURL = getClass().getResource(iconPath);
+            if (iconURL != null) {
+                BufferedImage img = javax.imageio.ImageIO.read(iconURL);
+                Image scaledImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImg);
+            }
+        } catch (Exception e) {
+            System.out.println("Could not load icon from: " + iconPath + " - " + e.getMessage());
+        }
+        
+        // Try alternative formats if original fails
+        if (iconPath.endsWith(".png")) {
+            String icoPath = iconPath.replace(".png", ".ico");
+            try {
+                java.net.URL iconURL = getClass().getResource(icoPath);
+                if (iconURL != null) {
+                    BufferedImage img = javax.imageio.ImageIO.read(iconURL);
+                    Image scaledImg = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+                    return new ImageIcon(scaledImg);
+                }
+            } catch (Exception e) {
+                System.out.println("Could not load alternative icon from: " + icoPath + " - " + e.getMessage());
+            }
+        }
+        
+        return null;
+    }
+
+    // Method to set multiple icon sizes for the application
+    private void setApplicationIcons() {
+        java.util.List<Image> iconImages = new java.util.ArrayList<>();
+        
+        // Try to load different sizes - support both PNG and ICO formats
+        String[] iconSizes = {"16x16", "32x32", "64x64"};
+        String[] formats = {".ico", ".png"};
+        
+        for (String size : iconSizes) {
+            boolean loaded = false;
+            for (String format : formats) {
+                try {
+                    java.net.URL iconURL = getClass().getResource("/icons/logo-" + size + format);
+                    if (iconURL != null) {
+                        BufferedImage img = javax.imageio.ImageIO.read(iconURL);
+                        iconImages.add(img);
+                        System.out.println("✓ Loaded icon: logo-" + size + format);
+                        loaded = true;
+                        break; // Found this size, move to next
+                    }
+                } catch (Exception e) {
+                    System.out.println("Could not load icon logo-" + size + format + ": " + e.getMessage());
+                }
+            }
+            
+            // If no icon found for this size, try to scale main icon
+            if (!loaded) {
+                try {
+                    java.net.URL mainIconURL = getClass().getResource("/icons/safeclean-icon.ico");
+                    if (mainIconURL == null) {
+                        mainIconURL = getClass().getResource("/icons/safeclean-icon.png");
+                    }
+                    if (mainIconURL != null) {
+                        BufferedImage originalImg = javax.imageio.ImageIO.read(mainIconURL);
+                        int targetSize = Integer.parseInt(size.split("x")[0]);
+                        Image scaledImg = originalImg.getScaledInstance(targetSize, targetSize, Image.SCALE_SMOOTH);
+                        BufferedImage bufferedScaled = new BufferedImage(targetSize, targetSize, BufferedImage.TYPE_INT_ARGB);
+                        Graphics2D g2d = bufferedScaled.createGraphics();
+                        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                        g2d.drawImage(scaledImg, 0, 0, null);
+                        g2d.dispose();
+                        iconImages.add(bufferedScaled);
+                        System.out.println("✓ Scaled main icon to " + size);
+                    }
+                } catch (Exception e) {
+                    System.out.println("Could not scale main icon to " + size + ": " + e.getMessage());
+                }
+            }
+        }
+        
+        // If we loaded any icons, set them
+        if (!iconImages.isEmpty()) {
+            setIconImages(iconImages);
+            System.out.println("✓ Application icons set successfully (" + iconImages.size() + " sizes loaded)");
+        } else {
+            // Fallback to our custom icon
+            setIconImage(createCustomIcon());
+            System.out.println("⚠ Using fallback generated icon");
+        }
     }
 
     private JMenuBar createMenuBar() {
@@ -208,7 +325,21 @@ public class SafeCleanGUI extends JFrame {
 
         // Create icon label
         JLabel iconLabel = new JLabel();
-        iconLabel.setIcon(new ImageIcon(createCustomIcon()));
+        BufferedImage headerIcon = createCustomIcon();
+        if (headerIcon != null) {
+            iconLabel.setIcon(new ImageIcon(headerIcon));
+        } else {
+            // Create a simple fallback icon if all else fails
+            BufferedImage fallbackIcon = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = fallbackIcon.createGraphics();
+            g2d.setColor(new Color(70, 130, 180));
+            g2d.fillRoundRect(0, 0, 64, 64, 12, 12);
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, 20));
+            g2d.drawString("SC", 20, 40);
+            g2d.dispose();
+            iconLabel.setIcon(new ImageIcon(fallbackIcon));
+        }
         
         JLabel titleLabel = new JLabel("SafeClean");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
@@ -834,11 +965,34 @@ public class SafeCleanGUI extends JFrame {
             "• Administrator privilege handling\n\n" +
             "Copyright (c) 2025 Babak Ahari\n" +
             "This software is provided \"as is\" without warranty.";
+        
+        // Try to load logo for about dialog - prefer ICO, then PNG
+        ImageIcon logoIcon = null;
+        
+        // Try loading specific about logo
+        logoIcon = loadIcon("/images/about-logo.ico", 64, 64);
+        if (logoIcon == null) {
+            logoIcon = loadIcon("/images/about-logo.png", 64, 64);
+        }
+        
+        // Fallback to main application icon
+        if (logoIcon == null) {
+            logoIcon = loadIcon("/icons/safeclean-icon.ico", 64, 64);
+        }
+        if (logoIcon == null) {
+            logoIcon = loadIcon("/icons/safeclean-icon.png", 64, 64);
+        }
+        
+        // Ultimate fallback to custom icon
+        if (logoIcon == null) {
+            logoIcon = new ImageIcon(createCustomIcon());
+        }
             
         JOptionPane.showMessageDialog(this, 
             aboutMessage,
             "About SafeClean", 
-            JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.INFORMATION_MESSAGE,
+            logoIcon);
     }
 
     private void openGitHubRepo() {
@@ -989,7 +1143,11 @@ public class SafeCleanGUI extends JFrame {
                     // Visual bar
                     int barLength = 30;
                     int usedBars = (int) (usedPercentage / 100 * barLength);
-                    String bar = "[" + "█".repeat(usedBars) + "░".repeat(barLength - usedBars) + "]";
+                    StringBuilder barBuilder = new StringBuilder("[");
+                    for (int i = 0; i < usedBars; i++) barBuilder.append("█");
+                    for (int i = usedBars; i < barLength; i++) barBuilder.append("░");
+                    barBuilder.append("]");
+                    String bar = barBuilder.toString();
                     diskAnalysis += bar + "\n\n";
                 }
             }

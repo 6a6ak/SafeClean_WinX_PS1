@@ -323,22 +323,63 @@ public class SafeCleanGUI extends JFrame {
         };
         panel.setBorder(new EmptyBorder(20, 25, 20, 25));
 
-        // Create icon label
+        // Create icon label with your custom icon
         JLabel iconLabel = new JLabel();
-        BufferedImage headerIcon = createCustomIcon();
+        
+        // Try to load your custom icon from multiple sources and sizes
+        ImageIcon headerIcon = null;
+        
+        // First, try to load the main application icon (prefer larger size for header)
+        headerIcon = loadIcon("/icons/safeclean-icon.ico", 80, 80);
+        if (headerIcon == null) {
+            headerIcon = loadIcon("/icons/safeclean-icon.png", 80, 80);
+        }
+        
+        // If main icon not found, try the logo icons
+        if (headerIcon == null) {
+            headerIcon = loadIcon("/icons/logo-64x64.png", 80, 80);
+        }
+        if (headerIcon == null) {
+            headerIcon = loadIcon("/icons/logo-32x32.ico", 80, 80);
+        }
+        
+        // If still no icon found, create a professional fallback (last resort)
         if (headerIcon != null) {
-            iconLabel.setIcon(new ImageIcon(headerIcon));
+            iconLabel.setIcon(headerIcon);
+            System.out.println("✓ Header icon loaded successfully");
         } else {
-            // Create a simple fallback icon if all else fails
-            BufferedImage fallbackIcon = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            // Create a professional fallback icon
+            BufferedImage fallbackIcon = new BufferedImage(80, 80, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = fallbackIcon.createGraphics();
-            g2d.setColor(new Color(70, 130, 180));
-            g2d.fillRoundRect(0, 0, 64, 64, 12, 12);
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            // Create gradient background
+            GradientPaint gradient = new GradientPaint(0, 0, new Color(45, 62, 80), 80, 80, new Color(70, 130, 180));
+            g2d.setPaint(gradient);
+            g2d.fillRoundRect(0, 0, 80, 80, 15, 15);
+            
+            // Add border
+            g2d.setColor(new Color(30, 40, 60));
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawRoundRect(2, 2, 76, 76, 15, 15);
+            
+            // Draw cleaning symbol instead of text
             g2d.setColor(Color.WHITE);
-            g2d.setFont(new Font("Arial", Font.BOLD, 20));
-            g2d.drawString("SC", 20, 40);
+            g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            
+            // Draw a cleaning brush
+            g2d.drawLine(20, 60, 45, 35);
+            g2d.fillOval(42, 32, 12, 12);
+            
+            // Add cleaning sparkles
+            g2d.setStroke(new BasicStroke(3));
+            g2d.drawLine(55, 20, 60, 15);
+            g2d.drawLine(60, 25, 65, 20);
+            g2d.drawLine(58, 30, 63, 25);
+            
             g2d.dispose();
             iconLabel.setIcon(new ImageIcon(fallbackIcon));
+            System.out.println("⚠ Using professional fallback header icon (your icons not found)");
         }
         
         JLabel titleLabel = new JLabel("SafeClean");

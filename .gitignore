@@ -1,0 +1,51 @@
+# SafeClean Release Branch - .gitignore
+
+# Temporary files
+*.tmp
+*.temp
+~*
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Build artifacts (not needed in release branch)
+target/
+build/
+dist/
+*.jar
+*.class
+
+# Logs
+*.log
+logs/
+
+# OS specific
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Archive files (keep only the main installer)
+*.zip
+*.7z
+*.rar
+*.tar.gz
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Documentation build files
+docs/_build/
+*.pdf
+
+# Keep only the main installer executable
+# All other executables should be ignored
+*.exe
+!SafeClean_Setup_v*.exe

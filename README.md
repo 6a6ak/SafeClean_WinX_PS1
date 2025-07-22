@@ -1,139 +1,124 @@
-# SafeClean WinX PS1
+# SafeClean - Professional Windows System Cleanup Tool
 
-A PowerShell script for safely cleaning up Windows system files and freeing disk space. This utility provides a menu-driven interface to perform various cleanup operations commonly needed for Windows maintenance.
+<div align="center">
+  <img src="https://clean.tricks.se/UI.PNG" alt="SafeClean Application Interface" width="800">
+  <br>
+  <em>Professional interface with comprehensive cleanup operations and detailed logging</em>
+</div>
 
-## Features
+## 🧹 Overview
 
-- 🗑️ **Clean Temporary Files** - Removes user and system temporary files
-- 🔄 **Clean Windows Update Cache** - Clears Windows Update download cache
-- 🖼️ **Clean Thumbnail Cache** - Removes Windows Explorer thumbnail cache
-- 📋 **Clear Event Logs** - Clears Windows Event Logs to free space
-- 🗂️ **Reduce WinSxS Folder** - Advanced cleanup of Windows Component Store
-- 💤 **Disable Hibernation** - Disables hibernation and removes hiberfil.sys
-- ♻️ **Clean Recycle Bin** - Empties the Recycle Bin completely
+**SafeClean** is a professional Windows system cleanup and optimization tool designed to help you reclaim disk space and improve system performance. With its intuitive interface and comprehensive cleanup operations, SafeClean safely removes unnecessary files while providing detailed logging of all operations.
 
-## Prerequisites
+## ⬇️ Download
 
-- **Windows Operating System** (Windows 10/11 recommended)
-- **Administrator privileges** required
-- **PowerShell 5.1 or later**
+### Latest Release: **Version 2.0.1**
 
-## Installation
+📦 **[Download SafeClean_Setup_v2.0.1.exe](./SafeClean_Setup_v2.0.1.exe)**
 
-1. Clone this repository or download the script:
-   ```bash
-   git clone https://github.com/6a6ak/SafeClean_WinX_PS1.git
-   ```
+- **File Size**: ~5MB
+- **File Type**: Windows Installer (.exe)
+- **Installation**: Run the setup wizard with administrator privileges
 
-2. Navigate to the script directory:
-   ```powershell
-   cd SafeClean_WinX_PS1
-   ```
+## 🚀 Key Features
 
-## Usage
+✅ **Professional GUI** - Intuitive operation buttons and clean interface  
+✅ **Real-time Logging** - Transparent output logging for all operations  
+✅ **Administrator Detection** - Automatic privilege detection and warnings  
+✅ **Detailed File Logging** - Complete file path logging for transparency  
+✅ **Safe Algorithms** - Cleanup algorithms that preserve system integrity  
+✅ **Unified Interface** - Multiple cleanup operations in one application  
 
-### Running the Script
+## 🛠️ System Cleanup Capabilities
 
-1. **Right-click** on PowerShell and select **"Run as Administrator"**
-2. Navigate to the script location
-3. Execute the script:
-   ```powershell
-   .\SafeClean.ps1
-   ```
+### Core Operations
+| Operation | Description | Benefit |
+|-----------|-------------|---------|
+| 🗂️ **Clean Temporary Files** | Removes accumulated temporary files | Frees disk space, improves performance |
+| 🔄 **Windows Update Cache** | Clears unnecessary update cache files | Resolves update issues, reclaims storage |
+| 🖼️ **Thumbnail Cache** | Removes corrupted/excessive thumbnail files | Improves file explorer performance |
+| 📋 **Event Logs** | Clears system logs while preserving important entries | Maintains optimal logging performance |
+| 📁 **WinSxS Folder** | Advanced cleanup of Windows Side-by-Side store | Reduces large system folder size safely |
+| 💤 **Hibernation File** | Removes hiberfil.sys when not needed | Frees several gigabytes of disk space |
+| 🗑️ **Recycle Bin** | Empties recycle bin across all drives | Permanently removes deleted files |
+| ⚡ **Run All Operations** | Execute all cleanup operations in sequence | Comprehensive system optimization |
 
-### Menu Options
+## 💻 System Requirements
 
-The script presents an interactive menu with the following options:
+- **OS**: Windows 10 or later
+- **RAM**: Minimum 2GB
+- **Storage**: 100MB free disk space
+- **Privileges**: Administrator access required for full functionality
 
-```
-===== Safe Cleanup Menu =====
-1) Clean Temporary Files
-2) Clean Windows Update Cache
-3) Clean Thumbnail Cache
-4) Clear Event Logs
-5) Reduce WinSxS Folder (Advanced)
-6) Disable Hibernation & Remove hiberfil.sys
-7) Clean Recycle Bin
-0) Exit
-```
+## 📥 Installation
 
-Simply enter the number corresponding to the cleanup operation you want to perform.
+1. **Download** the latest release: `SafeClean_Setup_v2.0.1.exe`
+2. **Right-click** the installer and select "Run as administrator"
+3. **Follow** the setup wizard instructions
+4. **Launch** SafeClean from the Start Menu or Desktop shortcut
 
-## What Each Option Does
+## 🔧 Usage
 
-### 1. Clean Temporary Files
-- Clears `%TEMP%` (user temporary files)
-- Clears `C:\Windows\Temp` (system temporary files)
+1. **Launch** SafeClean with administrator privileges
+2. **Select** individual cleanup operations or use "Run All Operations"
+3. **Monitor** the real-time output log for transparency
+4. **Review** detailed file path logging for complete transparency
 
-### 2. Clean Windows Update Cache
-- Stops Windows Update service
-- Clears `C:\Windows\SoftwareDistribution\Download`
-- Restarts Windows Update service
+## 📊 Benefits
 
-### 3. Clean Thumbnail Cache
-- Removes thumbnail cache from `%LOCALAPPDATA%\Microsoft\Windows\Explorer`
+- **Reclaim Disk Space**: Remove gigabytes of unnecessary files
+- **Improve Performance**: Optimize system responsiveness
+- **Safe Operation**: Preserve system integrity with intelligent algorithms
+- **Complete Transparency**: Detailed logging of all operations
+- **Professional Interface**: User-friendly design for all skill levels
 
-### 4. Clear Event Logs
-- Clears all Windows Event Logs
-- Provides feedback on which logs were cleared or skipped
+## 🔗 Links
 
-### 5. Reduce WinSxS Folder (Advanced)
-- Uses DISM to clean up Windows Component Store
-- Runs `StartComponentCleanup` with `ResetBase` option
-- **Warning**: This is an advanced operation
+- **Website**: [https://clean.tricks.se](https://clean.tricks.se)
+- **Source Code**: [Java Branch](../../tree/java) - For developers interested in the code
+- **Issues**: Report bugs or request features
+- **Author**: Babak Ahari
 
-### 6. Disable Hibernation & Remove hiberfil.sys
-- Disables Windows hibernation feature
-- Removes the hibernation file (hiberfil.sys) which can be several GB in size
-- Frees up space equal to your system's RAM size
-- **Note**: Can be re-enabled later with `powercfg /hibernate on`
+## 🌟 Version History
 
-### 7. Clean Recycle Bin
-- Completely empties the Recycle Bin
-- Removes all items permanently
+### Version 2.0.1 (Latest)
+- Enhanced system scanning algorithms
+- Improved performance and stability
+- Updated user interface design
+- Better Windows 11 compatibility
+- Advanced registry cleaning tools
+- Streamlined installation process
 
-## Safety Features
+## 👨‍💻 Development
 
-- **Error handling**: Operations continue even if individual items can't be deleted
-- **Path validation**: Checks if paths exist before attempting cleanup
-- **Service management**: Properly stops and starts services when needed
-- **Informative output**: Shows what's being cleaned and completion status
+Interested in the source code? Check out the **[Java Branch](../../tree/java)** for:
+- Complete source code
+- Build instructions with Maven
+- Development environment setup
+- Contribution guidelines
 
-## Important Notes
+## 📄 License
 
-⚠️ **Administrator Rights Required**: This script must be run as Administrator to access system folders and services.
+This project is licensed under the terms specified in the [LICENSE](./LICENSE) file.
 
-⚠️ **Data Loss Warning**: Some operations (especially Recycle Bin and Event Logs) will permanently delete data. Use with caution.
+## ⚠️ Important Notes
 
-⚠️ **WinSxS Cleanup**: Option 5 is an advanced operation that modifies the Windows Component Store. Only use if you understand the implications.
+- **Administrator privileges** are required for full functionality
+- **Always backup** important files before performing system cleanup
+- **Review the log output** to understand what files are being processed
+- **Some operations** may require a system restart to complete
 
-⚠️ **Hibernation Disable**: Option 6 will disable hibernation permanently and remove hiberfil.sys. This affects fast startup and hibernate features. Can be re-enabled later if needed.
+## 🎯 Use Cases
 
-## Compatibility
-
-- ✅ Windows 10
-- ✅ Windows 11
-- ✅ Windows Server 2016+
-- ⚠️ Windows 8.1 (limited testing)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-**Testing Notice**: While this script has been tested by the author, it is provided as-is and use is entirely at your own risk.
-
-## Disclaimer
-
-This software is provided "as is" without warranty of any kind. Use at your own risk. Always backup important data before running cleanup operations. While the author has tested this script, each system configuration is unique and results may vary.
-
-## Author
-
-Created for safe and efficient Windows system maintenance.
+- **Regular Maintenance**: Keep your system clean and optimized
+- **Pre-Sale Cleanup**: Prepare computers for sale or transfer
+- **Performance Issues**: Resolve slowdowns caused by file accumulation
+- **Storage Management**: Free up space on SSDs and small drives
+- **System Administration**: Maintain multiple computers efficiently
 
 ---
 
-⭐ If this script helped you free up disk space, please give it a star!
+<div align="center">
+  <strong>SafeClean v2.0.1</strong> - Professional System Cleanup Tool<br>
+  Created by <strong>Babak Ahari</strong> | <a href="https://clean.tricks.se">clean.tricks.se</a>
+</div>
